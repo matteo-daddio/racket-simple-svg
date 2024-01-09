@@ -171,7 +171,6 @@
             (when (not (null? shapes))
                   (let* ([shape_index (caar shapes)]
                          [shape_at? (cdar shapes)]
-                         [shape (hash-ref (*shapes_map*) shape_index)]
                          [_sstyle (hash-ref (*sstyles_map*) shape_index)])
                     (printf "    <use xlink:href=\"#~a\" " shape_index)
               

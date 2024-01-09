@@ -64,30 +64,38 @@
                     [rect_sstyle (sstyle-new)]
                     [group_sstyle (sstyle-new)]
                     )
-                
-                (sstyle-set! rect_sstyle 'stroke-width 2)
-                (sstyle-set! rect_sstyle 'stroke "red")
-                (sstyle-set! rect_sstyle 'fill "orange")
-                (svg-def-group
-                 "rect"
-                 (lambda ()
-                   (svg-use-shape rect rect_sstyle #:at? '(0 . 0))))
 
                 (sstyle-set! group_sstyle 'stroke-width 1)
                 (sstyle-set! group_sstyle 'stroke "black")
                 (svg-def-group
-                 "pattern"
+                 "cross_line"
                  (lambda ()
                    (svg-use-shape line1 group_sstyle #:at? '(0 . 0))
-                   (svg-use-shape line2 group_sstyle #:at? '(0 . 0))))
+                   (svg-use-shape line2 group_sstyle #:at? '(0 . 0))
+                   ))
 
-                (svg-show-group "rect")
+                (sstyle-set! rect_sstyle 'stroke-width 2)
+                (sstyle-set! rect_sstyle 'stroke "red")
+                (sstyle-set! rect_sstyle 'fill "orange")
+                (svg-def-group
+                 "pattern"
+                 (lambda ()
+                   (svg-use-shape rect rect_sstyle #:at? '(0 . 0))
+                   (svg-use-group "cross_line" #:at? '(0 . 0))
+                   (svg-use-group "cross_line" #:at? '(10 . 0))
+                   (svg-use-group "cross_line" #:at? '(20 . 0))
+                   (svg-use-group "cross_line" #:at? '(30 . 0))
+                   (svg-use-group "cross_line" #:at? '(40 . 0))
+                   ))
+
                 (svg-show-group "pattern" #:at? '(0 . 0))
                 (svg-show-group "pattern" #:at? '(10 . 0))
                 (svg-show-group "pattern" #:at? '(20 . 0))
                 (svg-show-group "pattern" #:at? '(30 . 0))
                 (svg-show-group "pattern" #:at? '(40 . 0))
                 )))])
+      
+      (printf "~a\n" actual_svg)
 
       (call-with-input-file group2_svg
         (lambda (expected)
