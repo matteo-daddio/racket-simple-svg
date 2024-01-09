@@ -55,7 +55,7 @@
 
     (let ([actual_svg
            (svg-out
-            50 50
+            100 100
             (lambda ()
               (let (
                     [rect (svg-def-rect 50 50)]
@@ -89,14 +89,11 @@
                    ))
 
                 (svg-show-group "pattern" #:at? '(0 . 0))
-                (svg-show-group "pattern" #:at? '(10 . 0))
-                (svg-show-group "pattern" #:at? '(20 . 0))
-                (svg-show-group "pattern" #:at? '(30 . 0))
-                (svg-show-group "pattern" #:at? '(40 . 0))
+                (svg-show-group "pattern" #:at? '(50 . 0))
+                (svg-show-group "pattern" #:at? '(0 . 50))
+                (svg-show-group "pattern" #:at? '(50 . 50))
                 )))])
       
-      (printf "~a\n" actual_svg)
-
       (call-with-input-file group2_svg
         (lambda (expected)
           (call-with-input-string

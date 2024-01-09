@@ -27,6 +27,11 @@
                         string?)]
           [*debug_port* parameter?]
           [svg-def-group (-> string? procedure? void?)]
+          [svg-use-group (->* (string?)
+                              (
+                               #:at? (cons/c natural? natural?)
+                                     )
+                              void?)]
           [svg-use-shape (->* (string? sstyle/c) 
                               (
                                #:at? (cons/c natural? natural?)

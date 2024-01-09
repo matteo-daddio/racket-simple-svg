@@ -15,6 +15,11 @@
                               )
                               void?)]
           [svg-def-group (-> string? procedure? void?)]
+          [svg-use-group (->* (string?)
+                              (
+                               #:at? (cons/c natural? natural?)
+                                     )
+                              void?)]
           [svg-show-group (->* (string?)
                               (
                                #:at? (cons/c natural? natural?)
@@ -105,6 +110,9 @@
 (define (svg-def-group group_name shapes-proc)
   (parameterize ([*current_group* group_name])
                 (shapes-proc)))
+
+(define (svg-use-group group_name #:at? [at? #f])
+  ((*add-group*) group_name at?))
       
 (define (svg-use-shape shape_index _sstyle
                        #:at? [at? #f]
@@ -171,7 +179,7 @@
             (when (not (null? shapes))
                   (let* ([shape_index (caar shapes)]
                          [shape_at? (cdar shapes)]
-                         [_sstyle (hash-ref (*sstyles_map*) shape_index)])
+                         [_sstyle (hash-ref (*sstyles_map*) shape_index (sstyle-new))])
                     (printf "    <use xlink:href=\"#~a\" " shape_index)
               
                     (when shape_at?

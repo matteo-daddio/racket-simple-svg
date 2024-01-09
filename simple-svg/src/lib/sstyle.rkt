@@ -31,7 +31,7 @@
 (define sstyle/c
   (struct/dc
    sstyle
-     [fill string?]
+     [fill (or/c #f string?)]
      [fill-rule (or/c #f 'nonzero 'evenodd 'inerit)]
      [fill-opacity (or/c #f (between/c 0 1))]
      [stroke (or/c #f string?)]
@@ -112,7 +112,7 @@
 (define (sstyle-new)
   (sstyle
 ;; fill color
-   "none"
+   #f
 ;; fill-rule
    #f
 ;; fill-opacity
@@ -152,7 +152,8 @@
        [(sstyle-fill-gradient _sstyle)
         (printf "fill=\"url(#~a)\" " (sstyle-fill-gradient _sstyle))]
        [else
-        (printf "fill=\"~a\" " (sstyle-fill _sstyle))])
+        (when (sstyle-fill _sstyle)
+          (printf "fill=\"~a\" " (sstyle-fill _sstyle)))])
 
       (when (sstyle-fill-rule _sstyle)
             (printf "fill-rule=\"~a\" " (sstyle-fill-rule _sstyle)))

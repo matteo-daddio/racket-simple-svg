@@ -11,11 +11,11 @@
   </defs>
 
   <symbol id="cross_line">
-    <use xlink:href="#s2" x="0" y="0" fill="none" stroke-width="1" stroke="black" />
-    <use xlink:href="#s3" x="0" y="0" fill="none" stroke-width="1" stroke="black" />
+    <use xlink:href="#s2" x="0" y="0" stroke-width="1" stroke="black" />
+    <use xlink:href="#s3" x="0" y="0" stroke-width="1" stroke="black" />
   </symbol>
 
-  <symbol id="rect">
+  <symbol id="pattern">
     <use xlink:href="#s1" x="0" y="0" fill="orange" stroke-width="2" stroke="red" />
     <use xlink:href="#cross_line" x="0" y="0" />
     <use xlink:href="#cross_line" x="10" y="0" />
@@ -24,8 +24,8 @@
     <use xlink:href="#cross_line" x="40" y="0" />
   </symbol>
 
-  <use xlink:href="#rect" x="0" y="0" />
-  <use xlink:href="#rect" x="50" y="0" />
-  <use xlink:href="#rect" x="0" y="50" />
-  <use xlink:href="#rect" x="50" y="50" />
+  <use xlink:href="#pattern" x="0" y="0" />
+  <use xlink:href="#pattern" x="50" y="0" />
+  <use xlink:href="#pattern" x="0" y="50" />
+  <use xlink:href="#pattern" x="50" y="50" />
 </svg>
