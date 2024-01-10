@@ -3,11 +3,7 @@
 @(require (for-label racket))
 @(require (for-label simple-svg))
 
-@(require simple-svg)
-
 @title{Usage}
-
-@defmodule[simple-svg]
 
 @section{Example: Recursive Circle}
 
@@ -82,13 +78,25 @@
   all svg-use-* in use-proc will be added to the group.
 }
 
-@defproc[(svg-show-group
+@defproc[(svg-def-group
            [group_name string?]
-           [group_style sstyle/c]
+           [use-proc procedure?]
+         )
+         void?]{
+  default, all svg-use-* will be added to "default" group.
+
+  use svg-def-group to define a named group to use later.
+
+  all svg-use-* in use-proc will be added to the group.
+}
+
+@defproc[(svg-use-group
+           [group_name string?]
            [#:at? at? (cons/c natural? natural?) '(0 . 0)]
           )
           void?]{
-  show a group by name with style and position.
+
+  use a group in a group.          
 }
 
 @defproc[(svg-show-default)
@@ -127,7 +135,7 @@ define shape first, then define group, reuse shape and style in group(s), show g
 generated svg file:
 
 @verbatim{
-@(svg-out
+(svg-out
   100 100
   (lambda ()
     (let ([rec (svg-def-rect 100 100)]
