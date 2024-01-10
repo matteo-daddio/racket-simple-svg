@@ -1,18 +1,12 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Polygon}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-polygon
-          [points (listof pair?)]
-        )
-        string?]{
-  define a polygon by points list.
+@codeblock{
+  (svg-def-polygon (-> (listof (cons/c natural? natural?)) string?))
 }
+
+define a polygon by points list.
 
 @section{polygon}
 

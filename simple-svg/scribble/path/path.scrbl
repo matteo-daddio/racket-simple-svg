@@ -1,18 +1,13 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Path}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-path
-          [procedure procedure?]
-        )
-        void?]{
-  all path actions should be include in this procedure: moveto, curve etc.
+@codeblock{
+  (svg-def-path (-> procedure? string?))
 }
+
+  all path actions should be include in this procedure: moveto, curve etc.
+
 
 @include-section{raw-path.scrbl}
 @include-section{moveto.scrbl}

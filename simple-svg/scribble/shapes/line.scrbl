@@ -1,18 +1,9 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Line}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-line
-          [start_point (cons/c natural? natural?)]
-          [end_point (cons/c natural? natural?)]
-        )
-        string?]{
-  define a line by start point and end point.
+@codeblock{
+  (svg-def-line (-> (cons/c natural? natural?) (cons/c natural? natural?) string?))
 }
 
 @section{line}

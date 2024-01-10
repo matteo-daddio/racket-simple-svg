@@ -1,18 +1,14 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Circle}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-circle
-          [radius natural?]
-        )
-        string?]{
-  define a circle by radius length.
+@codeblock{
+  (svg-def-circle
+    [radius natural?]
+    string?)
 }
+
+define a circle by radius length.
 
 @section{circle}
 

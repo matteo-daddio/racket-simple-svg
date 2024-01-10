@@ -1,16 +1,12 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Raw Path}
 
-@defproc[(svg-path-raw
-          [data string?]
-        )
-        void?]{
-  define a bunch path by raw data.
+@codeblock{
+  (svg-path-raw (-> string? void?))
 }
+
+  define a bunch path by raw data.
 
 @codeblock{
 (let ([path

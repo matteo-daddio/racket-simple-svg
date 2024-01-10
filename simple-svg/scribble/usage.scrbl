@@ -60,49 +60,44 @@
                      )
                      void?
                      ))
+}
 
   use a shape in group.
   
   hidden? set to true means just use it, but not show it. 
+
+@codeblock{
+ (svg-def-group (-> string? procedure? void?))
 }
 
-@defproc[(svg-def-group
-           [group_name string?]
-           [use-proc procedure?]
-         )
-         void?]{
   default, all svg-use-* will be added to "default" group.
 
   use svg-def-group to define a named group to use later.
 
   all svg-use-* in use-proc will be added to the group.
+
+@codeblock{
+  (svg-use-group (->* (string?)
+                      ( 
+                        #:at? (cons/c natural? natural?)
+                      )
+                      void?))
+}
+  use a group in a group.
+
+@codeblock{
+  (svg-show-group (->* (string?)
+                       (
+                         #:at? (cons/c natural? natural?)
+                       )
+                       void?))
 }
 
-@defproc[(svg-def-group
-           [group_name string?]
-           [use-proc procedure?]
-         )
-         void?]{
-  default, all svg-use-* will be added to "default" group.
-
-  use svg-def-group to define a named group to use later.
-
-  all svg-use-* in use-proc will be added to the group.
+@codeblock{
+  (svg-show-default (-> void?))
 }
 
-@defproc[(svg-use-group
-           [group_name string?]
-           [#:at? at? (cons/c natural? natural?) '(0 . 0)]
-          )
-          void?]{
-
-  use a group in a group.          
-}
-
-@defproc[(svg-show-default)
-         void?]{
   (svg-show-group "default" (sstyle-new))
-}
 
 @section{basic usage}
 
@@ -134,7 +129,7 @@ define shape first, then define group, reuse shape and style in group(s), show g
 
 generated svg file:
 
-@verbatim{
+@codeblock{
 (svg-out
   100 100
   (lambda ()

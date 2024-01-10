@@ -1,19 +1,13 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Ellipse}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-ellipse
-          [radius (cons/c natural? natural?)]
-        )
-        string?]{
+@codeblock{
+  (svg-def-ellipse (-> (cons/c natural? natural?) string?))
+}
 
   define a ellipse by radius length: '(x . y).
-}
+
 
 @section{ellipse}
 

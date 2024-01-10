@@ -1,18 +1,12 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Polyline}
 
-@defmodule[simple-svg #:link-target? #f]
-
-@defproc[(svg-def-polyline
-          [points (listof (cons/c natural? natural?))]
-        )
-        string?]{
-  define a polyline by points list.
+@codeblock{
+  (svg-def-polyline (-> (listof (cons/c natural? natural?)) string?))
 }
+
+define a polyline by points list.
 
 @section{polyline}
 

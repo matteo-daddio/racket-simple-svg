@@ -1,11 +1,6 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Svg Style}
-
-@defmodule[simple-svg #:link-target? #f]
 
 each shape and group can have multiple styles: stroke, fill etc.
 
@@ -13,8 +8,11 @@ sstyle is a struct, use sstyle-new, sstyle-clone, sstyle-get and sstyle-set! to 
 
 sstyle used in svg-use-shape and svg-show-group.
 
-@defstruct*[sstyle (
-     [fill string?]
+@codeblock{
+(define sstyle/c
+  (struct/dc
+   sstyle
+     [fill (or/c #f string?)]
      [fill-rule (or/c #f 'nonzero 'evenodd 'inerit)]
      [fill-opacity (or/c #f (between/c 0 1))]
      [stroke (or/c #f string?)]
@@ -29,31 +27,14 @@ sstyle used in svg-use-shape and svg-show-group.
      [scale (or/c #f natural? (cons/c natural? natural?))]
      [skewX (or/c #f natural?)]
      [skewY (or/c #f natural?)]
-     [fil-gradient (or/c #f string?)]
-     )]{
+     [fill-gradient (or/c #f string?)]
+    ))
 }
 
-@defproc[(sstyle-new) sstyle/c]{
-  init a empty svg style.                    
-}
-
-@defproc[(sstyle-clone
-           [sstyle sstyle/c]
-         ) sstyle/c]{
-  init a empty svg style.                    
-}
-
-@defproc[(sstyle-get
-           [sstyle sstyle/c]
-           [key symbol?]
-         ) sstyle/c]{
-  get a sstyle property.
-}
-
-@defproc[(sstyle-set!
-           [sstyle sstyle/c]
-           [key symbol?]
-           [val any/c]
-         ) void?]{
-  set a sstyle property.
+@codeblock{
+  (sstyle-new (-> sstyle/c))
+  (sstyle-format (-> sstyle/c string?))
+  (sstyle-clone (-> sstyle/c sstyle/c))
+  (sstyle-set! (-> sstyle/c symbol? any/c void?))
+  (sstyle-get (-> sstyle/c symbol? any/c))
 }

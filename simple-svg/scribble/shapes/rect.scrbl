@@ -1,22 +1,20 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Rectangle}
 
-@defmodule[simple-svg #:link-target? #f]
+@codeblock{
+(svg-def-rect (->* 
+                 (natural? natural?)
+                 (
+                  #:radius? (or/c #f (cons/c natural? natural?))
+                  )
+                 string?))
+}
 
-@defproc[(svg-def-rect
-          [width natural?]
-          [height natural?]
-          [#:radius? radius? (or/c #f (cons/c natural? natural?)) #f]
-        )
-        string?]{
   define a rectangle.
 
   radius?: '(radiusX . radiusY)
-}
+
 
 @section{rect}
 
