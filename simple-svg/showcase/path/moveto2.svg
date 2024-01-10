@@ -13,7 +13,7 @@
   </defs>
 
   <symbol id="default">
-    <use xlink:href="#s1" fill="none" stroke-width="1" stroke="#7AA20D" />
+    <use xlink:href="#s1" stroke-width="1" stroke="#7AA20D" />
     <use xlink:href="#s3" fill="red" />
   </symbol>
 

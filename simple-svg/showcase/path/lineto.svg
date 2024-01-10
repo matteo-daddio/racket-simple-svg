@@ -17,7 +17,7 @@
   </defs>
 
   <symbol id="default">
-    <use xlink:href="#s1" fill="none" stroke-width="5" stroke="#7AA20D" stroke-linejoin="round" />
+    <use xlink:href="#s1" stroke-width="5" stroke="#7AA20D" stroke-linejoin="round" />
   </symbol>
 
   <use xlink:href="#default" />

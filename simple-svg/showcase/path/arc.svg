@@ -30,10 +30,10 @@
   </defs>
 
   <symbol id="default">
-    <use xlink:href="#s1" fill="none" stroke-width="3" stroke="#ccccff" />
-    <use xlink:href="#s2" fill="none" stroke-width="3" stroke="green" />
-    <use xlink:href="#s3" fill="none" stroke-width="3" stroke="blue" />
-    <use xlink:href="#s4" fill="none" stroke-width="3" stroke="yellow" />
+    <use xlink:href="#s1" stroke-width="3" stroke="#ccccff" />
+    <use xlink:href="#s2" stroke-width="3" stroke="green" />
+    <use xlink:href="#s3" stroke-width="3" stroke="blue" />
+    <use xlink:href="#s4" stroke-width="3" stroke="yellow" />
     <use xlink:href="#s6" fill="red" />
     <use xlink:href="#s7" fill="red" />
   </symbol>
