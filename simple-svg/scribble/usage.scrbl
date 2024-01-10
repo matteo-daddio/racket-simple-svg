@@ -1,8 +1,5 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Usage}
 
 @section{Example: Recursive Circle}
@@ -42,25 +39,28 @@
 
 @section{Basic Function}
 
-@defproc[(svg-out
-          [width natural?]
-          [height natural?]
-          [procedure procedure?]
-          [#:viewBox? viewBox? (or/c #f (list/c natural? natural? natural? natural?)) #f]
-        )
-        string?]{
+@codeblock{
+  (svg-out (->* (natural? natural? procedure?)
+               (
+                 #:viewBox? (or/c #f (list/c natural? natural? natural? natural?))
+               )
+               string?
+               ))
+}
+
   specify width and height manully.
   
   viewBox?: '(x y width height), if needed.
-}
 
-@defproc[(svg-use-shape
-           [shape_index string?]
-           [shape_style sstyle/c]
-           [#:at? at? (cons/c natural? natural?) '(0 . 0)]
-           [#:hidden? hidden? boolean? #f]
-        )
-        string?]{
+@codeblock{
+  (svfg-use-shape (->* (string? sstyle/c) 
+                     (
+                       #:at? (cons/c natural? natural?)
+                       #:hidden? boolean?
+                     )
+                     void?
+                     ))
+
   use a shape in group.
   
   hidden? set to true means just use it, but not show it. 
