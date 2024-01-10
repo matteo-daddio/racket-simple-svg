@@ -3,9 +3,9 @@
 @title{Circle}
 
 @codeblock{
-  (svg-def-circle
-    [radius natural?]
-    string?)
+(svg-def-circle
+  [radius natural?]
+  string?)
 }
 
 define a circle by radius length.

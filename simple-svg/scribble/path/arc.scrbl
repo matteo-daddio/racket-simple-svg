@@ -1,18 +1,17 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{svg-path-arc/arc*}
 
 @image{showcase/path/arc.png}
 
-@defproc[(svg-path-arc
-           [point (cons/c integer? integer?)]
-           [radius (cons/c natural? natural?)]
-           [direction (or/c 'left_big 'left_small 'right_big 'right_small)]
-         )
-         void?]{
+@codeblock{
+  (svg-path-arc
+    (->
+      (cons/c integer? integer?)
+      (cons/c natural? natural?)
+      (or/c 'left_big 'left_small 'right_big 'right_small)
+      void?))
+}
   define a elliptical arc.
 
   the arc is a part of ellipse, through start and end point.
@@ -22,15 +21,16 @@
   radius specify the ellipse's size.
   
   direction is a simplified large-arc-flag and sweep-flag's comibination.
+
+@codeblock{
+  (svg-path-arc*
+    (->
+      (cons/c integer? integer?)
+      (cons/c natural? natural?)
+      (or/c 'left_big 'left_small 'right_big 'right_small)
+      void?))
 }
 
-@defproc[(svg-path-arc*
-           [point (cons/c integer? integer?)]
-           [radius (cons/c natural? natural?)]
-           [direction (or/c 'left_big 'left_small 'right_big 'right_small)]
-         )
-         void?]{
-}
 
 @codeblock{
 (let (

@@ -1,27 +1,22 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{svg-path-qcurve/qcurve*}
 
 @image{showcase/path/qcurve.jpg}
 
-@defproc[(svg-path-qcurve
-          [point1 (cons/c natural? natural?)]
-          [point2 (cons/c natural? natural?)]
-        )
-        void?]{
+@codeblock{
+  (svg-path-qcurve
+  (-> (cons/c integer? integer?) (cons/c integer? integer?))
+  void?)
+}
   use two control points to draw a Quadratic Bezier Curve.
 
   qcurve use relative position, relative to the start position.
-}
 
-@defproc[(svg-path-qcurve*
-          [point1 (cons/c natural? natural?)]
-          [point2 (cons/c natural? natural?)]
-        )
-        void?]{
+@codeblock{
+  (svg-path-qcurve*
+  (-> (cons/c integer? integer?) (cons/c integer? integer?))
+  void?)
 }
 
 @codeblock{

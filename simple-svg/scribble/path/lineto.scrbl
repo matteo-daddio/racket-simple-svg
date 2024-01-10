@@ -1,23 +1,25 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{svg-path-lineto/lineto*/hlineto/vlineto}
 
-@defproc[(svg-path-lineto [point (cons/c integer? integer?)]) void?]{
+@codeblock{
+  (svg-path-lineto (-> (cons/c integer? integer?) void?))
+}
   relative position.                        
-}
 
-@defproc[(svg-path-lineto* [point (cons/c integer? integer?)]) void?]{
+@codeblock{
+  (svg-path-lineto (-> (cons/c integer? integer?) void?))
+}
   absolute position.
+
+@codeblock{
+  (svg-path-hlineto (-> integer? void?))
 }
 
-@defproc[(svg-path-hlineto [point integer?]) void?]{
+@codeblock{
+  (svg-path-vlineto (-> integer? void?))
 }
 
-@defproc[(svg-path-vlineto [point integer?]) void?]{
-}
 
 @codeblock{
 (let ([path

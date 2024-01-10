@@ -1,31 +1,29 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{Text}
 
-@defmodule[simple-svg #:link-target? #f]
+@codeblock{
+(svg-def-text (->* 
+  (string?)
+  (
+    #:font-size? (or/c #f natural?)
+    #:font-family? (or/c #f string?)
+    #:dx? (or/c #f integer?)
+    #:dy? (or/c #f integer?)
+    #:rotate? (or/c #f (listof integer?))
+    #:textLength? (or/c #f natural?)
+    #:kerning? (or/c #f natural? 'auto 'inherit)
+    #:letter-space? (or/c #f natural? 'normal 'inherit)
+    #:word-space? (or/c #f natural? 'normal 'inherit)
+    #:text-decoration? (or/c #f 'overline 'underline 'line-through)
+    #:path? (or/c #f string?)
+    #:path-startOffset? (or/c #f (integer-in 0 100))
+  )
+  string?))
+}
 
-@defproc[(svg-def-text
-          [text string?]
-          [#:font-size? font-size? (or/c #f natural?) #f]
-          [#:font-family? font-family? (or/c #f string?) #f]
-          [#:dx? dx? (or/c #f integer?) #f]
-          [#:dy? dy? (or/c #f integer?) #f]
-          [#:rotate? rotate? (or/c #f (listof integer?)) #f]
-          [#:textLength? textLength? (or/c #f natural?) #f]
-          [#:kerning? kerning? (or/c #f natural? 'auto 'inherit) #f]
-          [#:letter-space? letter-space? (or/c #f natural? 'normal 'inherit) #f]
-          [#:word-space? word-space? (or/c #f natural? 'normal 'inherit) #f]
-          [#:text-decoration? text-decoration? (or/c #f 'overline 'underline 'line-through) #f]
-          [#:path? path? (or/c #f string?) #f]
-          [#:path-startOffset? path-startOffset? (or/c #f (integer-in 0 100)) #f]
-         )
-        string?]{
   dx, dy: relative position.
   kerning, letter-space, word-space: all about letter and word spaces.
-}
 
 @codeblock{
 (let ([text (svg-def-text "城春草木深" #:font-size? 50)]

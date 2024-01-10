@@ -1,29 +1,26 @@
 #lang scribble/manual
 
-@(require (for-label racket))
-@(require (for-label simple-svg))
-
 @title{svg-path-ccurve/ccurve*}
 
 @image{showcase/path/ccurve.jpg}
 
-@defproc[(svg-path-ccurve
-          [point1 (cons/c natural? natural?)]
-          [point2 (cons/c natural? natural?)]
-          [point3 (cons/c natural? natural?)]
-        )
-        void?]{
+@codeblock{
+  (svg-path-ccurve
+    (-> (cons/c integer? integer?)
+        (cons/c integer? integer?)
+        (cons/c integer? integer?)
+        void?))
+}
   use three control points to draw a Cubic Bezier Curve.
 
   ccurve use relative position, relative to the start position.
-}
 
-@defproc[(svg-path-ccurve*
-          [point1 (cons/c natural? natural?)]
-          [point2 (cons/c natural? natural?)]
-          [point3 (cons/c natural? natural?)]
-        )
-        void?]{
+@codeblock{
+  (svg-path-ccurve*
+    (-> (cons/c integer? integer?)
+        (cons/c integer? integer?)
+        (cons/c integer? integer?)
+        void?))
 }
 
 @codeblock{

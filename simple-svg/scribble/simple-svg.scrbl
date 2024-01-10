@@ -10,7 +10,7 @@ thanks to Joni's tutorial: @hyperlink["http://svgpocketguide.com/"]{"Svg Pocket 
 
 @table-of-contents[]
 
-@section[#:tag "install"]{Install}
+@section{Install}
 
 raco pkg install simple-svg
 
