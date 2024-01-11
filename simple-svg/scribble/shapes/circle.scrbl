@@ -2,29 +2,29 @@
 
 @title{Circle}
 
-@codeblock{
+@codeblock|{
 (svg-def-circle
   [radius natural?]
   string?)
-}
+}|
 
 define a circle by radius length.
 
 @section{circle}
 
-@codeblock{
+@codeblock|{
 (let ([circle (svg-def-circle 50)]
       [_sstyle (sstyle-new)])
 
   (sstyle-set! _sstyle 'fill "#BBC42A")
   (svg-use-shape circle _sstyle #:at? '(50 . 50))
   (svg-show-default))
-}
+}|
 @image{showcase/shapes/circle/circle.svg}
 
 @section{multiple circle}
 
-@codeblock{
+@codeblock|{
 (let ([circle (svg-def-circle 50)]
       [red_sstyle (sstyle-new)]
       [yellow_sstyle (sstyle-new)]
@@ -44,5 +44,5 @@ define a circle by radius length.
   (svg-use-shape circle green_sstyle #:at? '(150 . 150))
 
   (svg-show-default))
-}
+}|
 @image{showcase/shapes/circle/circle3.svg}

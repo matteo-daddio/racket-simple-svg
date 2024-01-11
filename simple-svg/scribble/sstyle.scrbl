@@ -8,7 +8,7 @@ sstyle is a struct, use sstyle-new, sstyle-clone, sstyle-get and sstyle-set! to 
 
 sstyle used in svg-use-shape and svg-show-group.
 
-@codeblock{
+@codeblock|{
 (define sstyle/c
   (struct/dc
    sstyle
@@ -29,12 +29,12 @@ sstyle used in svg-use-shape and svg-show-group.
      [skewY (or/c #f natural?)]
      [fill-gradient (or/c #f string?)]
     ))
-}
+}|
 
-@codeblock{
+@codeblock|{
   (sstyle-new (-> sstyle/c))
   (sstyle-format (-> sstyle/c string?))
   (sstyle-clone (-> sstyle/c sstyle/c))
   (sstyle-set! (-> sstyle/c symbol? any/c void?))
   (sstyle-get (-> sstyle/c symbol? any/c))
-}
+}|

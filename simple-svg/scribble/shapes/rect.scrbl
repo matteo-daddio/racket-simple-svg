@@ -2,14 +2,14 @@
 
 @title{Rectangle}
 
-@codeblock{
+@codeblock|{
 (svg-def-rect (->* 
                  (natural? natural?)
                  (
                   #:radius? (or/c #f (cons/c natural? natural?))
                   )
                  string?))
-}
+}|
 
   define a rectangle.
 
@@ -18,46 +18,46 @@
 
 @section{rect}
 
-@codeblock{
+@codeblock|{
 (let ([rec (svg-def-rect 100 100)]
       [_sstyle (sstyle-new)])
 
   (sstyle-set! _sstyle 'fill "#BBC42A")
   (svg-use-shape rec _sstyle)
   (svg-show-default))
-}
+}|
 
 @image{showcase/shapes/rect/rect.svg}
 
 @section{rect with start point(no padding)}
 
-@codeblock{
+@codeblock|{
 (let ([rec (svg-def-rect 100 100)]
       [_sstyle (sstyle-new)])
 
   (sstyle-set! _sstyle 'fill "#BBC42A")
   (svg-use-shape rec _sstyle #:at? '(50 . 50))
   (svg-show-default))
-}
+}|
 
 @image{showcase/shapes/rect/rect_y.svg}
 
 @section{rect with radius}
 
-@codeblock{
+@codeblock|{
 (let ([rec (svg-def-rect 100 100 #:radius? '(5 . 10))]
       [_sstyle (sstyle-new)])
 
   (sstyle-set! _sstyle 'fill "#BBC42A")
   (svg-use-shape rec _sstyle)
   (svg-show-default))
-}
+}|
 
 @image{showcase/shapes/rect/rect_radius.svg}
 
 @section{multiple rect}
 
-@codeblock{
+@codeblock|{
 (let (
       [blue_rec (svg-def-rect 150 150)]
       [_blue_sstyle (sstyle-new)]
@@ -76,6 +76,6 @@
   (svg-use-shape red_rec _red_sstyle #:at? '(50 . 50))
 
   (svg-show-default))
-}
+}|
 
 @image{showcase/shapes/rect/m_rect.svg}

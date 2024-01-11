@@ -2,8 +2,8 @@
 
 @title{svg-path-close}
 
-@codeblock{
+@codeblock|{
   (svg-path-close (-> void?))
-}
+}|
 
   close a path.

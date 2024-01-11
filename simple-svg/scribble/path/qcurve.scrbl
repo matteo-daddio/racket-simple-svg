@@ -4,22 +4,22 @@
 
 @image{showcase/path/qcurve.jpg}
 
-@codeblock{
+@codeblock|{
   (svg-path-qcurve
   (-> (cons/c integer? integer?) (cons/c integer? integer?))
   void?)
-}
+}|
   use two control points to draw a Quadratic Bezier Curve.
 
   qcurve use relative position, relative to the start position.
 
-@codeblock{
+@codeblock|{
   (svg-path-qcurve*
   (-> (cons/c integer? integer?) (cons/c integer? integer?))
   void?)
-}
+}|
 
-@codeblock{
+@codeblock|{
 (let ([path
         (svg-def-path
           (lambda ()
@@ -43,13 +43,13 @@
   (svg-use-shape red_dot dot_style #:at? '(210 . 60))
 
   (svg-show-default))
-}
+}|
 
-@codeblock{
+@codeblock|{
 (svg-path-moveto* '(10 . 60))
 (svg-path-qcurve '(50 . -50) '(100 . 0))
 (svg-path-qcurve '(50 . 50) '(100 . 0))
-}
+}|
 
 little red pots show the control points.
 

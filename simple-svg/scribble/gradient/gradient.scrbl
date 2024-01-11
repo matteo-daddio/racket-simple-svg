@@ -2,7 +2,7 @@
 
 @title{Gradient}
 
-@codeblock{
+@codeblock|{
 (svg-def-gradient-stop (->* 
    (
    #:offset (integer-in 0 100)
@@ -12,12 +12,12 @@
    #:opacity? (between/c 0 1)
    )
    (list/c (integer-in 0 100) string? (between/c 0 1))))
-}
+}|
   offset from 0 to 100, means the distance of the color gradient.
  
   lineargradient and radialgradient both have a stop list.
 
-@codeblock{
+@codeblock|{
 (svg-def-linear-gradient (->*
   ((listof (list/c (integer-in 0 100) string? (between/c 0 1))))
   (
@@ -29,13 +29,12 @@
     #:spreadMethod? (or/c #f 'pad 'repeat 'reflect)
   )
   string?))
-}
-
+}|
   use x1, y1, x2, y2 justify gradient's direction and position.
 
   default is from left to right, x1=0, y1=0, x2=100, y2=0.
 
-@codeblock{
+@codeblock|{
 (let ([rec (svg-def-rect 100 100)]
       [gradient
         (svg-def-linear-gradient
@@ -48,10 +47,10 @@
    (sstyle-set! _sstyle 'fill-gradient gradient)
    (svg-use-shape rec _sstyle)
    (svg-show-default))
-}
+}|
 @image{showcase/gradient/gradient1.svg}
 
-@codeblock{
+@codeblock|{
 (svg-def-radial-gradient (->*
        ((listof (list/c (integer-in 0 100) string? (between/c 0 1))))
        (
@@ -64,11 +63,11 @@
         #:spreadMethod? (or/c #f 'pad 'repeat 'reflect)
        )
        string?))
-}
+}|
   cx, cy, fx, fy has value 0 - 100, means 0% - 100%, use them to justify gradient's position and direction.
 
 
-@codeblock{
+@codeblock|{
 (let ([rec (svg-def-rect 100 100)]
       [gradient
        (svg-def-radial-gradient
@@ -81,5 +80,5 @@
   (sstyle-set! _sstyle 'fill-gradient gradient)
   (svg-use-shape rec _sstyle)
   (svg-show-default))
-}
+}|
 @image{showcase/gradient/gradient2.svg}

@@ -2,26 +2,25 @@
 
 @title{svg-path-lineto/lineto*/hlineto/vlineto}
 
-@codeblock{
+@codeblock|{
   (svg-path-lineto (-> (cons/c integer? integer?) void?))
-}
+}|
   relative position.                        
 
-@codeblock{
+@codeblock|{
   (svg-path-lineto (-> (cons/c integer? integer?) void?))
-}
+}|
   absolute position.
 
-@codeblock{
+@codeblock|{
   (svg-path-hlineto (-> integer? void?))
-}
+}|
 
-@codeblock{
+@codeblock|{
   (svg-path-vlineto (-> integer? void?))
-}
+}|
 
-
-@codeblock{
+@codeblock|{
 (let ([path
   (svg-def-path
     (lambda ()
@@ -39,5 +38,5 @@
   (svg-use-shape path path_sstyle)
 
   (svg-show-default))
-}
+}|
 @image{showcase/path/lineto.svg}

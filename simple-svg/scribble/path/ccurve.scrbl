@@ -4,26 +4,26 @@
 
 @image{showcase/path/ccurve.jpg}
 
-@codeblock{
+@codeblock|{
   (svg-path-ccurve
     (-> (cons/c integer? integer?)
         (cons/c integer? integer?)
         (cons/c integer? integer?)
         void?))
-}
+}|
   use three control points to draw a Cubic Bezier Curve.
 
   ccurve use relative position, relative to the start position.
 
-@codeblock{
+@codeblock|{
   (svg-path-ccurve*
     (-> (cons/c integer? integer?)
         (cons/c integer? integer?)
         (cons/c integer? integer?)
         void?))
-}
+}|
 
-@codeblock{
+@codeblock|{
 (let ([path
         (svg-def-path
           (lambda ()
@@ -49,13 +49,13 @@
   (svg-use-shape red_dot dot_style #:at? '(190 . 60))
 
   (svg-show-default))
-}
+}|
 
-@codeblock{
+@codeblock|{
 (svg-path-moveto* '(10 . 60))
 (svg-path-ccurve '(20 . -45) '(70 . -45) '(90 . 0))
 (svg-path-ccurve '(20 . 45) '(70 . 45) '(90 . 0))
-}
+}|
 
 little red pots show the control points.
 

@@ -4,14 +4,14 @@
 
 @image{showcase/path/arc.png}
 
-@codeblock{
+@codeblock|{
   (svg-path-arc
     (->
       (cons/c integer? integer?)
       (cons/c natural? natural?)
       (or/c 'left_big 'left_small 'right_big 'right_small)
       void?))
-}
+}|
   define a elliptical arc.
 
   the arc is a part of ellipse, through start and end point.
@@ -22,17 +22,16 @@
   
   direction is a simplified large-arc-flag and sweep-flag's comibination.
 
-@codeblock{
+@codeblock|{
   (svg-path-arc*
     (->
       (cons/c integer? integer?)
       (cons/c natural? natural?)
       (or/c 'left_big 'left_small 'right_big 'right_small)
       void?))
-}
+}|
 
-
-@codeblock{
+@codeblock|{
 (let (
       [arc1
         (svg-def-path
@@ -82,5 +81,5 @@
   (svg-use-shape red_dot dot_style #:at? '(170 . 85))
 
   (svg-show-default))
-}
+}|
 @image{showcase/path/arc.svg}

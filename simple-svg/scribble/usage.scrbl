@@ -4,11 +4,7 @@
 
 @section{Example: Recursive Circle}
 
-@codeblock{
-#lang racket
-
-(require simple-svg)
-
+@codeblock|{
 (let ([canvas_size 400])
   (with-output-to-file
       "recursive.svg" #:exists 'replace
@@ -34,25 +30,25 @@
                        (recur-circle 200 200 100)))
                    
                    (svg-show-default)))))))
-}
+}|
 @image{showcase/example/recursive.svg}
 
 @section{Basic Function}
 
-@codeblock{
+@codeblock|{
   (svg-out (->* (natural? natural? procedure?)
                (
                  #:viewBox? (or/c #f (list/c natural? natural? natural? natural?))
                )
                string?
                ))
-}
+}|
 
   specify width and height manully.
   
   viewBox?: '(x y width height), if needed.
 
-@codeblock{
+@codeblock|{
   (svfg-use-shape (->* (string? sstyle/c) 
                      (
                        #:at? (cons/c natural? natural?)
@@ -60,15 +56,15 @@
                      )
                      void?
                      ))
-}
+}|
 
   use a shape in group.
   
   hidden? set to true means just use it, but not show it. 
 
-@codeblock{
+@codeblock|{
  (svg-def-group (-> string? procedure? void?))
-}
+}|
 
   default, all svg-use-* will be added to "default" group.
 
@@ -76,26 +72,26 @@
 
   all svg-use-* in use-proc will be added to the group.
 
-@codeblock{
+@codeblock|{
   (svg-use-group (->* (string?)
                       ( 
                         #:at? (cons/c natural? natural?)
                       )
                       void?))
-}
+}|
   use a group in a group.
 
-@codeblock{
+@codeblock|{
   (svg-show-group (->* (string?)
                        (
                          #:at? (cons/c natural? natural?)
                        )
                        void?))
-}
+}|
 
-@codeblock{
+@codeblock|{
   (svg-show-default (-> void?))
-}
+}|
 
   (svg-show-group "default" (sstyle-new))
 
@@ -115,7 +111,7 @@
 
 define shape first, then define group, reuse shape and style in group(s), show group(s) with style in canvas.
 
-@codeblock{
+@codeblock|{
 (svg-out
   100 100
   (lambda ()
@@ -125,11 +121,11 @@ define shape first, then define group, reuse shape and style in group(s), show g
       (sstyle-set! _sstyle 'fill "#BBC42A")
       (svg-use-shape rec _sstyle)
       (svg-show-default))))
-}
+}|
 
 generated svg file:
 
-@codeblock{
+@codeblock|{
 (svg-out
   100 100
   (lambda ()
@@ -139,12 +135,12 @@ generated svg file:
       (sstyle-set! _sstyle 'fill "#BBC42A")
       (svg-use-shape rec _sstyle)
       (svg-show-default))))
-}
+}|
 @image{showcase/shapes/rect/rect.svg}
 
 @section{multiple shapes}
 
-@codeblock{
+@codeblock|{
 (let (
       [blue_rec (svg-def-rect 150 150)]
       [_blue_sstyle (sstyle-new)]
@@ -164,11 +160,11 @@ generated svg file:
       (svg-use-shape red_rec _red_sstyle #:at? '(50 . 50))
 
       (svg-show-default))
-}
+}|
 
 @section{use group}
 
-@codeblock{
+@codeblock|{
 (let (
      [line1 (svg-def-line '(0 . 0) '(30 . 30))]
      [line2 (svg-def-line '(0 . 15) '(30 . 15))]
@@ -191,5 +187,5 @@ generated svg file:
   (svg-show-group "pattern" group_sstyle #:at? '(80 . 200))
   (svg-show-group "pattern" group_sstyle #:at? '(150 . 100))
   )
-}
+}|
 @image{showcase/group/group1.svg}

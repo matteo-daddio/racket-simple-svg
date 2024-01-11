@@ -2,9 +2,9 @@
 
 @title{Path}
 
-@codeblock{
+@codeblock|{
   (svg-def-path (-> procedure? string?))
-}
+}|
 
   all path actions should be include in this procedure: moveto, curve etc.
 

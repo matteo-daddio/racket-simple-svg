@@ -2,13 +2,13 @@
 
 @title{Raw Path}
 
-@codeblock{
+@codeblock|{
   (svg-path-raw (-> string? void?))
-}
+}|
 
   define a bunch path by raw data.
 
-@codeblock{
+@codeblock|{
 (let ([path
   (svg-def-path
     (lambda ()
@@ -31,5 +31,5 @@
     (svg-use-shape path sstyle_path)
 
     (svg-show-default))
-}
+}|
 @image{showcase/path/raw_path.svg}

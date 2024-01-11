@@ -4,7 +4,7 @@
 
 @section{Combine shapes to group}
 
-@codeblock{
+@codeblock|{
 (svg-out
  220 280
  (lambda ()
@@ -29,12 +29,12 @@
      (svg-show-group "pattern" #:at? '(80 . 200))
      (svg-show-group "pattern" #:at? '(150 . 100))
      )))
-}
+}|
 @image{showcase/group/group1.svg}
 
 @section{Combine groups to group}
 
-@codeblock{
+@codeblock|{
 (svg-out
  100 100
  (lambda ()
@@ -74,5 +74,5 @@
      (svg-show-group "pattern" #:at? '(0 . 50))
      (svg-show-group "pattern" #:at? '(50 . 50))
      )))
-}
+}|
 @image{showcase/group/group2.svg}

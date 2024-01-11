@@ -2,15 +2,15 @@
 
 @title{Polyline}
 
-@codeblock{
+@codeblock|{
   (svg-def-polyline (-> (listof (cons/c natural? natural?)) string?))
-}
+}|
 
 define a polyline by points list.
 
 @section{polyline}
 
-@codeblock{
+@codeblock|{
 (let ([polyline
          (svg-def-polyline
            '((0 . 0) (40 . 0) (40 . 40) (80 . 40) (80 . 80) (120 . 80) (120 . 120)))]
@@ -22,6 +22,6 @@ define a polyline by points list.
 
   (svg-use-shape polyline _sstyle #:at? '(5 . 5))
   (svg-show-default))
-}
+}|
 @image{showcase/shapes/polyline/polyline.svg}
 
