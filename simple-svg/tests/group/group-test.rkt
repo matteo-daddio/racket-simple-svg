@@ -42,6 +42,8 @@
                 (svg-show-group "pattern" #:at? '(80 . 200))
                 (svg-show-group "pattern" #:at? '(150 . 100))
                 )))])
+      
+      (printf "~a\n" actual_svg)
 
       (call-with-input-file group1_svg
         (lambda (expected)

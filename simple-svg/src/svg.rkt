@@ -27,7 +27,6 @@
                               void?)]
           [svg-show-default (-> void?)]
           [*add-shape* parameter?]
-          [*debug_port* parameter?]
           ))
 
 (define *svg* (make-parameter #f))
@@ -43,7 +42,6 @@
 (define *sstyles_map* (make-parameter #f))
 (define *set-sstyles-map* (make-parameter #f))
 (define *current_group* (make-parameter #f))
-(define *debug_port* (make-parameter #f))
 (define *show-list* (make-parameter #f))
 (define *viewBox* (make-parameter #f))
 (define *width* (make-parameter #f))
@@ -65,7 +63,6 @@
      (
       [*width* width]
       [*height* height]
-      [*debug_port* (current-output-port)]
       [*shape-index* (lambda () (set! shapes_count (add1 shapes_count)) (format "s~a" shapes_count))]
       [*group-index* (lambda () (set! groups_count (add1 groups_count)) (format "g~a" groups_count))]
       [*set-shapes-map* (lambda (shape_index shape) (hash-set! shapes_map shape_index shape))]
