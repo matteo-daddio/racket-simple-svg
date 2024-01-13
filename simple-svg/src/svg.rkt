@@ -1,53 +1,33 @@
 #lang racket
 
-(require "lib/sstyle.rkt")
-
 (provide (contract-out
-          [svg-out (->* (natural? natural? procedure?)
-                        (
-                         #:viewBox? (or/c #f (list/c natural? natural? natural? natural?))
-                        )
-                        string?)]
-          [svg-use-shape (->* (string? sstyle/c) 
-                              (
-                               #:at? (cons/c natural? natural?)
-                               #:hidden? boolean?
-                              )
-                              void?)]
-          [svg-def-group (-> string? procedure? void?)]
-          [svg-use-group (->* (string?)
-                              (
-                               #:at? (cons/c natural? natural?)
-                                     )
-                              void?)]
-          [svg-show-group (->* (string?)
-                              (
-                               #:at? (cons/c natural? natural?)
-                              )
-                              void?)]
-          [*add-shape* parameter?]
+          [struct SVG
+                  (
+                   (group_show_list (listof string?)) 
+                   (xlsx_dir path-string?)
+                   (sheet_list (listof (or/c DATA-SHEET? CHART-SHEET?)))
+                   (shared_string->index_map (hash/c string? natural?))
+                   (shared_index->string_map (hash/c natural? string?))
+                   (styles STYLES?)
+                   )
+                  ]
+          [with-xlsx (-> procedure? void?)]
+          [with-sheet-ref (-> natural? procedure? any)]
+          [with-sheet (-> procedure? any)]
+          [with-sheet-name (-> string? procedure? any)]
+          [with-sheet-*name* (-> string? procedure? any)]
+          [*XLSX* (parameter/c (or/c XLSX? #f))]
+          [*CURRENT_SHEET* (parameter/c (or/c DATA-SHEET? CHART-SHEET? #f))]
+          [*CURRENT_SHEET_INDEX* (parameter/c natural?)]
+          [add-data-sheet (->* (string? (listof list?)) (cell?) void?)]
+          [add-chart-sheet (-> string?
+                               (or/c 'LINE 'LINE3D 'BAR 'BAR3D 'PIE 'PIE3D 'UNKNOWN)
+                               string?
+                               (listof (list/c string? string? string? string? string?))
+                               void?)]
+          [get-sheet-count (-> natural?)]
+          [get-sheet-name-list (-> (listof string?))]
           ))
-
-(define *svg* (make-parameter #f))
-(define *shape-index* (make-parameter #f))
-(define *group-index* (make-parameter #f))
-(define *add-shape* (make-parameter #f))
-(define *set-shapes-map* (make-parameter #f))
-(define *remove-shapes-map* (make-parameter #f))
-(define *add-group* (make-parameter #f))
-(define *groups_map* (make-parameter #f))
-(define *shapes_map* (make-parameter #f))
-(define *sstyles_map* (make-parameter #f))
-(define *set-sstyles-map* (make-parameter #f))
-(define *current_group* (make-parameter #f))
-(define *show-list* (make-parameter #f))
-(define *viewBox* (make-parameter #f))
-(define *width* (make-parameter #f))
-(define *height* (make-parameter #f))
-
-(define (svg-out width height write_proc
-                 #:viewBox? [viewBox? #f]
-                 )
 
   (let ([shapes_count 0]
         [groups_count 0]
@@ -57,139 +37,135 @@
         [groups_map (make-hash)]
         [sstyles_map (make-hash)]
         [show_list '()])
-    (parameterize
-     (
-      [*width* width]
-      [*height* height]
-      [*shape-index* (lambda () (set! shapes_count (add1 shapes_count)) (format "s~a" shapes_count))]
-      [*group-index* (lambda () (set! groups_count (add1 groups_count)) (format "g~a" groups_count))]
-      [*set-shapes-map* (lambda (shape_index shape) (hash-set! shapes_map shape_index shape))]
-      [*remove-shapes-map* (lambda (shape_index shape) (hash-remove! shapes_map shape_index))]
-      [*add-shape*
-       (lambda (shape)
-         (let ([shape_index ((*shape-index*))])
-           ((*set-shapes-map*) shape_index shape)
-           shape_index))]
-      [*groups_map* groups_map]
-      [*shapes_map* shapes_map]
-      [*sstyles_map* sstyles_map]
-      [*set-sstyles-map* (lambda (_index _sstyle) (hash-set! sstyles_map _index _sstyle))]
-      [*add-group*
-       (lambda (_index at?)
-         (hash-set! groups_map
-                    (*current_group*)
-                    `(,@(hash-ref groups_map (*current_group*) '())
-                      ,(cons _index at?))))]
-      [*show-list* (lambda () show_list)]
-      [*current_group* "default"]
-      [*viewBox* viewBox?]
-      )
-     (with-output-to-string
-       (lambda ()
-         (dynamic-wind
-             (lambda () 
-               (printf 
-                "<svg\n    ~a\n    ~a\n    ~a\n"
-                "version=\"1.1\""
-                "xmlns=\"http://www.w3.org/2000/svg\""
-                "xmlns:xlink=\"http://www.w3.org/1999/xlink\""))
-             (lambda ()
-               (write_proc)
-               (when (member "default" (*show-list*))
-                 (svg-show-group "default")))
-             (lambda ()
-               (flush-data)
-               (printf "</svg>\n"))))))))
 
-(define (svg-def-group group_name shapes-proc)
-  (parameterize ([*current_group* group_name])
-                (shapes-proc)))
 
-(define (svg-use-group group_name #:at? [at? #f])
-  ((*add-group*) group_name at?))
-      
-(define (svg-use-shape shape_index _sstyle
-                       #:at? [at? #f]
-                       #:hidden? [hidden? #f]
-                       )
-  (let* ([shape (hash-ref (*shapes_map*) shape_index)]
-         [new_shape_index shape_index]
-         [new_shape shape]
-         [new_at? at?])
+(define *XLSX* (make-parameter #f))
+(define *CURRENT_SHEET* (make-parameter #f))
+(define *CURRENT_SHEET_INDEX* (make-parameter 0))
 
-    (cond
-     [(eq? (hash-ref shape 'type) 'circle)
-      (set! new_shape_index ((*shape-index*)))
-      (set! new_shape (hash-copy shape))
-      (when at?
-            (hash-set! new_shape 'cx (car new_at?))
-            (hash-set! new_shape 'cy (cdr new_at?)))
-      (set! new_at? #f)]
-     [(eq? (hash-ref shape 'type) 'ellipse)
-      (set! new_shape_index ((*shape-index*)))
-      (set! new_shape (hash-copy shape))
-      (let ([radius (hash-ref shape 'radius)])
-        (when at?
-              (hash-set! new_shape 'cx (car new_at?))
-              (hash-set! new_shape 'cy (cdr new_at?)))
-        (set! new_at? #f)
-        (hash-set! new_shape 'rx (car radius))
-        (hash-set! new_shape 'ry (cdr radius)))])
+(struct XLSX
+        (
+         (xlsx_dir #:mutable)
+         (sheet_list #:mutable)
+         shared_string->index_map
+         shared_index->string_map
+         styles))
 
-    ((*set-shapes-map*) new_shape_index new_shape)
-    ((*set-sstyles-map*) new_shape_index _sstyle)
-    (when (not hidden?)
-      ((*add-group*) new_shape_index new_at?))
-    ))
+(define (with-xlsx user_proc)
+  (parameterize*
+   (
+    [*XLSX* (new-xlsx)]
+    [*STYLES* (XLSX-styles (*XLSX*))]
+    )
+   (user_proc)))
 
-(define (svg-show-group group_index #:at? [at? #f])
-  (set! (*show-list*) `(,@(*show-list*) ,(cons group_index at?))))
+(define (with-sheet-ref sheet_index user_proc)
+  (when (< sheet_index (length (XLSX-sheet_list (*XLSX*))))
+        (let ([sheet (list-ref (XLSX-sheet_list (*XLSX*)) sheet_index)])
+          (cond
+           [(DATA-SHEET? sheet)
+            (parameterize
+             (
+              [*CURRENT_SHEET* (list-ref (XLSX-sheet_list (*XLSX*)) sheet_index)]
+              [*CURRENT_SHEET_INDEX* sheet_index]
+              [*CURRENT_SHEET_STYLE* (list-ref (STYLES-sheet_style_list (*STYLES*)) sheet_index)]
+              )
+             (user_proc))]
+           [(CHART-SHEET? sheet)
+            (parameterize
+             (
+              [*CURRENT_SHEET* (list-ref (XLSX-sheet_list (*XLSX*)) sheet_index)]
+              [*CURRENT_SHEET_INDEX* sheet_index]
+              [*CURRENT_SHEET_STYLE* (list-ref (STYLES-sheet_style_list (*STYLES*)) sheet_index)]
+              )
+             (user_proc))]
+           [else
+            (void)]))))
 
-(define (flush-data)
-  (printf "    width=\"~a\" height=\"~a\"\n" (*width*) (*height*))
+(define (with-sheet user_proc)
+  (with-sheet-ref 0 user_proc))
 
-  (when (*viewBox*)
-    (printf "    viewBox=\"~a ~a ~a ~a\"\n"
-            (first (*viewBox*)) (second (*viewBox*)) (third (*viewBox*)) (fourth (*viewBox*))))
-      
-  (printf "    >\n")
+(define (with-sheet-name sheet_name user_proc)
+  (let ([sheet_index (index-of (get-sheet-name-list) sheet_name)])
+    (if sheet_index
+        (with-sheet-ref sheet_index user_proc)
+        (error (format "no such sheet name[~a]!" sheet_name)))))
 
-  (when (not (= (hash-count (*shapes_map*)) 0))
-    (printf "  <defs>\n")
-    (let loop-def ([defs (sort (hash-keys (*shapes_map*)) string<?)])
-      (when (not (null? defs))
-        (let ([shape (hash-ref (*shapes_map*) (car defs))])
-          (printf "~a" ((hash-ref shape 'format-def) (car defs) shape)))
-        (loop-def (cdr defs))))
-    (printf "  </defs>\n\n"))
+(define (with-sheet-*name* search_sheet_name user_proc)
+  (let loop ([sheet_name_list (get-sheet-name-list)])
+    (if (not (null? sheet_name_list))
+        (if (regexp-match (regexp search_sheet_name) (car sheet_name_list))
+            (with-sheet-name (car sheet_name_list) user_proc)
+            (loop (cdr sheet_name_list)))
+        (error (format "no such sheet name[*~a*]!" search_sheet_name)))))
 
-  (let loop-group ([groups (sort (hash-keys (*groups_map*)) string<?)])
-    (when (not (null? groups))
-          (printf "  <symbol id=\"~a\">\n" (car groups))
-          (let loop-shape ([shapes (hash-ref (*groups_map*) (car groups))])
-            (when (not (null? shapes))
-                  (let* ([shape_index (caar shapes)]
-                         [shape_at? (cdar shapes)]
-                         [_sstyle (hash-ref (*sstyles_map*) shape_index (sstyle-new))])
-                    (printf "    <use xlink:href=\"#~a\" " shape_index)
-              
-                    (when shape_at?
-                          (printf "x=\"~a\" y=\"~a\" " (car shape_at?) (cdr shape_at?)))
+(define (new-xlsx) (XLSX "" '() (make-hash) (make-hash) (new-styles)))
 
-                    (printf "~a/>\n" (sstyle-format _sstyle))
-                    )
-                  (loop-shape (cdr shapes))))
-          (printf "  </symbol>\n\n")
-          (loop-group (cdr groups))))
-    
-  (let loop-group ([groups ((*show-list*))])
-    (when (not (null? groups))
-      (let* ([group_index (caar groups)]
-             [group_at? (cdar groups)])
-        (printf "  <use xlink:href=\"#~a\" " group_index)
-        
-        (when group_at?
-              (printf "x=\"~a\" y=\"~a\" " (car group_at?) (cdr group_at?)))
-        
-        (printf "/>\n"))
-      (loop-group (cdr groups)))))
+(define (add-data-sheet sheet_name sheet_data [start_cell? "A1"])
+  (check-data-integrity sheet_data)
+
+  (if (not (member sheet_name (get-sheet-name-list)))
+      (let ([sheet_index (length (XLSX-sheet_list (*XLSX*)))]
+            [cell->value_map (make-hash)])
+
+        (let ([sheet_style (new-sheet-style)]
+              [start_cell_row_col (cell->row_col start_cell?)])
+
+          (let row-loop ([rows sheet_data]
+                         [row_index (car start_cell_row_col)])
+            (when (not (null? rows))
+              (let col-loop ([cols (car rows)]
+                             [col_index (cdr start_cell_row_col)])
+                (when (not (null? cols))
+                  (let ([cell (row_col->cell row_index col_index)])
+                    (hash-set! cell->value_map cell (car cols))
+                    (col-loop (cdr cols) (add1 col_index)))))
+
+                (row-loop (cdr rows) (add1 row_index))))
+
+        (if (< sheet_index (length (STYLES-sheet_style_list (*STYLES*))))
+            (set-STYLES-sheet_style_list!
+             (*STYLES*)
+             (list-set (STYLES-sheet_style_list (*STYLES*)) sheet_index sheet_style))
+            (set-STYLES-sheet_style_list!
+             (*STYLES*)
+             `(,@(STYLES-sheet_style_list (*STYLES*)) ,sheet_style)))
+
+        (set-XLSX-sheet_list! (*XLSX*)
+                              `(,@(XLSX-sheet_list (*XLSX*))
+                                ,(DATA-SHEET
+                                  sheet_name
+                                  (capacity->range (cons (length sheet_data) (length (car sheet_data))) start_cell?)
+                                  cell->value_map)))))
+      (error (format "duplicate sheet name[~a]" sheet_name))))
+
+(define (add-chart-sheet sheet_name chart_type topic serial)
+  (if (not (member sheet_name (get-sheet-name-list)))
+      (begin
+        (set-XLSX-sheet_list! (*XLSX*)
+                              `(,@(XLSX-sheet_list (*XLSX*))
+                                ,(CHART-SHEET sheet_name chart_type topic serial)))
+        (set-STYLES-sheet_style_list!
+         (*STYLES*)
+         `(,@(STYLES-sheet_style_list (*STYLES*)) ,(new-sheet-style))))
+      (error (format "duplicate sheet name[~a]" sheet_name))))
+
+(define (get-sheet-name-list)
+  (let loop ([sheet_list (XLSX-sheet_list (*XLSX*))]
+             [sheet_index 0]
+             [result_list '()])
+    (if (not (null? sheet_list))
+        (loop
+         (cdr sheet_list)
+         (add1 sheet_index)
+         (cons
+          (cond
+           [(DATA-SHEET? (car sheet_list))
+            (DATA-SHEET-sheet_name (car sheet_list))]
+           [(CHART-SHEET? (car sheet_list))
+            (CHART-SHEET-sheet_name (car sheet_list))])
+          result_list))
+        (reverse result_list))))
+
+(define (get-sheet-count)
+  (length (XLSX-sheet_list (*XLSX*))))
