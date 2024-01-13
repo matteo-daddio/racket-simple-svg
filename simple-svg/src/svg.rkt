@@ -25,7 +25,6 @@
                                #:at? (cons/c natural? natural?)
                               )
                               void?)]
-          [svg-show-default (-> void?)]
           [*add-shape* parameter?]
           ))
 
@@ -36,7 +35,6 @@
 (define *set-shapes-map* (make-parameter #f))
 (define *remove-shapes-map* (make-parameter #f))
 (define *add-group* (make-parameter #f))
-(define *add-to-show* (make-parameter #f))
 (define *groups_map* (make-parameter #f))
 (define *shapes_map* (make-parameter #f))
 (define *sstyles_map* (make-parameter #f))
@@ -82,9 +80,6 @@
                     (*current_group*)
                     `(,@(hash-ref groups_map (*current_group*) '())
                       ,(cons _index at?))))]
-      [*add-to-show*
-       (lambda (group_index at?)
-         (set! show_list `(,@show_list ,(cons group_index at?))))]
       [*show-list* (lambda () show_list)]
       [*current_group* "default"]
       [*viewBox* viewBox?]
@@ -99,7 +94,9 @@
                 "xmlns=\"http://www.w3.org/2000/svg\""
                 "xmlns:xlink=\"http://www.w3.org/1999/xlink\""))
              (lambda ()
-               (write_proc))
+               (write_proc)
+               (when (member "default" (*show-list*))
+                 (svg-show-group "default")))
              (lambda ()
                (flush-data)
                (printf "</svg>\n"))))))))
@@ -145,11 +142,8 @@
       ((*add-group*) new_shape_index new_at?))
     ))
 
-(define (svg-show-default)
-  (svg-show-group "default"))
-
 (define (svg-show-group group_index #:at? [at? #f])
-  ((*add-to-show*) group_index at?))
+  (set! (*show-list*) `(,@(*show-list*) ,(cons group_index at?))))
 
 (define (flush-data)
   (printf "    width=\"~a\" height=\"~a\"\n" (*width*) (*height*))

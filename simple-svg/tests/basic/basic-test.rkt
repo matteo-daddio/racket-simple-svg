@@ -7,7 +7,7 @@
 
 (require racket/runtime-path)
 (define-runtime-path empty_svg "../../showcase/basic/empty.svg")
-(define-runtime-path size_svg "../../showcase/basic/size.svg")
+(define-runtime-path rect_svg "../../../showcase/shapes/rect/rect.svg")
 (define-runtime-path viewBox_svg "../../showcase/basic/viewBox.svg")
 
 (define test-basic
@@ -17,7 +17,7 @@
    (test-case
     "test-empty-svg"
 
-    (let ([actual_svg
+    (let ([svg_str
            (svg-out
             20 20
             (lambda ()
@@ -26,30 +26,33 @@
       (call-with-input-file empty_svg
         (lambda (expected)
           (call-with-input-string
-           actual_svg
+           svg_str
            (lambda (actual)
              (check-lines? expected actual)))))))
 
    (test-case
-    "test-size-svg"
+    "test-basic"
 
-    (let ([actual_svg
+    (let ([svg_str
            (svg-out
-            640 320
+            100 100
             (lambda ()
-              (void)))])
+              (let ([rec (svg-def-rect 100 100)]
+                    [_sstyle (sstyle-new)])
+                (sstyle-set! _sstyle 'fill "#BBC42A")
+                (svg-use-shape rec _sstyle))))])
       
-      (call-with-input-file size_svg
+      (call-with-input-file rect_svg
         (lambda (expected)
           (call-with-input-string
-           actual_svg
+           svg_str
            (lambda (actual)
              (check-lines? expected actual)))))))
 
    (test-case
     "test-viewbox-svg"
 
-    (let ([actual_svg
+    (let ([svg_str
            (svg-out
             100 100
             #:viewBox? '(50 0 100 100)
@@ -63,7 +66,7 @@
       (call-with-input-file viewBox_svg
         (lambda (expected)
           (call-with-input-string
-           actual_svg
+           svg_str
            (lambda (actual)
              (check-lines? expected actual)))))))
 

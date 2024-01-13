@@ -2,6 +2,29 @@
 
 @title{Usage}
 
+@section{Basic: Empty Svg}
+
+@codeblock|{
+(svg-out
+  20 20
+  (lambda ()
+    (void)))
+}|
+
+generated a empty svg only have a head part:
+
+@verbatim{
+<svg
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="20" height="20"
+    >
+</svg>
+}
+
+@section{
+
 @section{Example: Recursive Circle}
 
 @codeblock|{
@@ -161,6 +184,7 @@ generated svg file:
 
       (svg-show-default))
 }|
+@image{showcase/shapes/rect/m_rect.svg}
 
 @section{use group}
 
