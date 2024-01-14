@@ -131,7 +131,8 @@
               (hash-set! new_shape 'cy (cdr new_at?)))
         (set! new_at? #f)
         (hash-set! new_shape 'rx (car radius))
-        (hash-set! new_shape 'ry (cdr radius)))])
+        (hash-set! new_shape 'ry (cdr radius)))]
+     )
 
     ((*set-shapes-map*) new_shape_index new_shape)
     ((*set-sstyles-map*) new_shape_index _sstyle)
