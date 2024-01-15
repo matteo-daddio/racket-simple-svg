@@ -1,4 +1,4 @@
-#lang racket
+v#lang racket
 
 (require "lib/sstyle.rkt")
 
