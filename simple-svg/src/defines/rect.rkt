@@ -25,9 +25,9 @@
         #:transparent
         )
 
-(define (new-rect width height
-                 #:radius_x? [radius_x? #f]
-                 #:radius_y? [radius_y? #f])
+(define (new-rect shape_name width height
+                  #:radius_x? [radius_x? #f]
+                  #:radius_y? [radius_y? #f])
   (RECT width height radius_x? radius_y?))
 
 
