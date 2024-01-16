@@ -4,10 +4,9 @@
           [sstyle/c contract?]
           [sstyle-new (-> sstyle/c)]
           [sstyle-format (-> sstyle/c string?)]
-          [sstyle-clone (-> sstyle/c sstyle/c)]
           ))
 
-(struct sstyle (
+(struct SSTYLE (
                 fill
                 fill-rule
                 fill-opacity
@@ -49,61 +48,10 @@
      [fill-gradient (or/c #f string?)]
     ))
 
-(define (sstyle-clone sv)
-  (sstyle
-   (sstyle-fill sv)
-   (sstyle-fill-rule sv)
-   (sstyle-fill-opacity sv)
-   (sstyle-stroke sv)
-   (sstyle-stroke-width sv)
-   (sstyle-stroke-linecap sv)
-   (sstyle-stroke-linejoin sv)
-   (sstyle-stroke-miterlimit sv)
-   (sstyle-stroke-dasharray sv)
-   (sstyle-stroke-dashoffset sv)
-   (sstyle-translate sv)
-   (sstyle-rotate sv)
-   (sstyle-scale sv)
-   (sstyle-skewX sv)
-   (sstyle-skewY sv)
-   (sstyle-fill-gradient sv)
-   ))
-
 (define (sstyle-new)
   (sstyle
-;; fill color
-   #f
-;; fill-rule
-   #f
-;; fill-opacity
-   #f
-;; stroke color
-   #f
-;; stroke width
-   #f
-;; stroke-linecap
-   #f
-;; stroke-linejoin
-   #f
-;; stroke-miterlimit
-   #f
-;; stroke-dasharray
-   #f
-;; stroke-dashoffset
-   #f
-;; translate
-   #f
-;; rotate
-   #f
-;; scale
-   #f
-;; skewX
-   #f
-;; skewY
-   #f
-;; fill-gradient
-   #f
-   ))
+   #f #f #f #f #f #f #f #f #f #f
+   #f #f #f #f #f #f))
 
 (define (sstyle-format _sstyle)
   (with-output-to-string
@@ -176,4 +124,3 @@
             
             (printf "\""))
       )))
-
