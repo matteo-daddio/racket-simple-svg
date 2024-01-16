@@ -25,62 +25,14 @@ v#lang racket
                                #:at? (cons/c natural? natural?)
                               )
                               void?)]
-          [*add-shape* parameter?]
           ))
-
-(define *shape-index* (make-parameter #f))
-(define *group-index* (make-parameter #f))
-(define *add-shape* (make-parameter #f))
-(define *set-shapes-map* (make-parameter #f))
-(define *remove-shapes-map* (make-parameter #f))
-(define *add-group* (make-parameter #f))
-(define *groups_map* (make-parameter #f))
-(define *shapes_map* (make-parameter #f))
-(define *sstyles_map* (make-parameter #f))
-(define *set-sstyles-map* (make-parameter #f))
-(define *current_group* (make-parameter #f))
-(define *show-list* (make-parameter #f))
-(define *viewBox* (make-parameter #f))
-(define *width* (make-parameter #f))
-(define *height* (make-parameter #f))
 
 (define (svg-out width height write_proc
                  #:viewBox? [viewBox? #f]
                  )
 
-  (let ([shapes_count 0]
-        [groups_count 0]
-        [shapes_map (make-hash)]
-        [groups_map (make-hash)]
-        [sstyles_map (make-hash)]
-        [show_list '()])
-    (parameterize
-     (
-      [*width* width]
-      [*height* height]
-      [*shape-index* (lambda () (set! shapes_count (add1 shapes_count)) (format "s~a" shapes_count))]
-      [*group-index* (lambda () (set! groups_count (add1 groups_count)) (format "g~a" groups_count))]
-      [*set-shapes-map* (lambda (shape_index shape) (hash-set! shapes_map shape_index shape))]
-      [*remove-shapes-map* (lambda (shape_index shape) (hash-remove! shapes_map shape_index))]
-      [*add-shape*
-       (lambda (shape)
-         (let ([shape_index ((*shape-index*))])
-           ((*set-shapes-map*) shape_index shape)
-           shape_index))]
-      [*groups_map* groups_map]
-      [*shapes_map* shapes_map]
-      [*sstyles_map* sstyles_map]
-      [*set-sstyles-map* (lambda (_index _sstyle) (hash-set! sstyles_map _index _sstyle))]
-      [*add-group*
-       (lambda (_index at?)
-         (hash-set! groups_map
-                    (*current_group*)
-                    `(,@(hash-ref groups_map (*current_group*) '())
-                      ,(cons _index at?))))]
-      [*show-list* (lambda () show_list)]
-      [*current_group* "default"]
-      [*viewBox* viewBox?]
-      )
+  (let ([widget_index 0]
+        [svg (new-svg)])
      (with-output-to-string
        (lambda ()
          (dynamic-wind
@@ -91,12 +43,10 @@ v#lang racket
                 "xmlns=\"http://www.w3.org/2000/svg\""
                 "xmlns:xlink=\"http://www.w3.org/1999/xlink\""))
              (lambda ()
-               (write_proc)
-               (when (member "default" (*show-list*))
-                 (svg-show-group "default")))
+               (write_proc svg))
              (lambda ()
                (flush-data)
-               (printf "</svg>\n"))))))))
+               (printf "</svg>\n")))))))
 
 (define (svg-def-group group_name shapes-proc)
   (parameterize ([*current_group* group_name])

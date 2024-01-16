@@ -6,20 +6,24 @@
 (provide (contract-out
           [struct SVG
                   (
+                   (widget_index natural?)
                    (shape_define_map (hash/c string? (or/c RECT?)))
                    (group_define_map (hash/c string? GROUP?))
-                   (show_pos_map (hash/c string? POS?))
-                   (show_list (listof string?))
+                   (group_show_list (listof (cons string? POS?)))
                    )
                   ]
+          [new-svg (-> SVG?)]
           ))
 
 (struct SVG (
+             [widget_index #:mutable]
              [shape_define_map #:mutable]
              [group_define_map #:mutable]
-             [show_pos_map #:mutable]
              [show_list #:mutable]
              )
         #:transparent
         )
+
+(define (new-svg)
+  (SVG 0 (make-hash) (make-hash) '()))
 
