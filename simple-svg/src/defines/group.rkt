@@ -20,3 +20,6 @@
               )
         #:transparent
         )
+
+(define (new-group)
+  (GROUP '() hash? hash?))

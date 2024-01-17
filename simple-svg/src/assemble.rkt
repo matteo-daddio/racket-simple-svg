@@ -11,7 +11,6 @@ v#lang racket
           [svg-use-shape (->* (string? sstyle/c) 
                               (
                                #:at? (cons/c natural? natural?)
-                               #:hidden? boolean?
                               )
                               void?)]
           [svg-def-group (-> string? procedure? void?)]
@@ -48,12 +47,29 @@ v#lang racket
                (flush-data)
                (printf "</svg>\n")))))))
 
-(define (svg-def-group group_name shapes-proc)
-  (parameterize ([*current_group* group_name])
-                (shapes-proc)))
+(define (svg-def-shape svg shape)
+  (let* ([new_widget_index (add1 (SVG-widget_index svg))]
+         [shape_index (format "s~a" new_widget_index)])
+    (set-SVG-widget_index! svg new_widget_index)
+    (hash-set! shape_define_map shape_index shape)
+    shape_index))
 
-(define (svg-use-group group_name #:at? [at? #f])
-  ((*add-group*) group_name at?))
+(define (svg-def-group svg user_proc)
+  (let* ([new_widget_index (add1 (SVG-widget_index svg))]
+         [shape_index (format "g~a" new_widget_index)])
+    (set-SVG-widget_index! svg new_widget_index)
+    
+    (let ([group (new-group)])
+      (user_proc group)
+      
+      (hash-set! group_define_map group_index group)
+      
+      group_index)))
+
+(define (svg-add-widget-to-group widget_index
+                                 #:sstyle? [sstyle? #f]
+                                 #:at? [at? #f])
+  )
       
 (define (svg-use-shape shape_index _sstyle
                        #:at? [at? #f]
