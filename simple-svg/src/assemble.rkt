@@ -121,25 +121,26 @@ v#lang racket
 (define (flush-data)
   (printf "    width=\"~a\" height=\"~a\"\n" (*width*) (*height*))
 
-  (when (*viewBox*)
-    (printf "    viewBox=\"~a ~a ~a ~a\"\n"
-            (first (*viewBox*)) (second (*viewBox*)) (third (*viewBox*)) (fourth (*viewBox*))))
+  (when (SVG-view_box (*svg*))
+    (let ([view_box (SVG-view_box (*svg*))])
+      (printf "    viewBox=\"~a ~a ~a ~a\"\n"
+              (first view_box) (second view_box) (third view_box) (fourth view_box))))
       
   (printf "    >\n")
 
-  (when (not (= (hash-count (*shapes_map*)) 0))
+  (when (not (= (hash-count (SVG-shape_define_map (*svg*))) 0))
     (printf "  <defs>\n")
-    (let loop-def ([defs (sort (hash-keys (*shapes_map*)) string<?)])
+    (let loop-def ([defs (sort (hash-keys (SVG-shape_define_map (*svg*))) string<?)])
       (when (not (null? defs))
-        (let ([shape (hash-ref (*shapes_map*) (car defs))])
+        (let ([shape (hash-ref (SVG-shape_define_map (*svg*)) (car defs))])
           (printf "~a" ((hash-ref shape 'format-def) (car defs) shape)))
         (loop-def (cdr defs))))
     (printf "  </defs>\n\n"))
 
-  (let loop-group ([groups (sort (hash-keys (*groups_map*)) string<?)])
+  (let loop-group ([groups (sort (hash-keys (SVG-group_define_map (*svg*))) string<?)])
     (when (not (null? groups))
           (printf "  <symbol id=\"~a\">\n" (car groups))
-          (let loop-shape ([shapes (hash-ref (*groups_map*) (car groups))])
+          (let loop-shape ([shapes (hash-ref (SVG-group_define_map (*svg*)) (car groups))])
             (when (not (null? shapes))
                   (let* ([shape_index (caar shapes)]
                          [shape_at? (cdar shapes)]
@@ -155,15 +156,15 @@ v#lang racket
           (printf "  </symbol>\n\n")
           (loop-group (cdr groups))))
     
-  (let loop-group ([groups ((*show-list*))])
-    (when (not (null? groups))
-      (let* ([group_index (caar groups)]
-             [group_at? (cdar groups)])
+  (let loop-show ([group_shows (SVG-group_show_list (*svg*))])
+    (when (not (null? group_shows))
+      (let* ([group_show (car group_shows)]
+             [group_index (car group_show)]
+             [group_pos (cdr group_show)])
         (printf "  <use xlink:href=\"#~a\" " group_index)
         
         (when group_at?
-              (printf "x=\"~a\" y=\"~a\" " (car group_at?) (cdr group_at?)))
+              (printf "x=\"~a\" y=\"~a\" " (car group_pos) (cdr group_pos)))
         
         (printf "/>\n"))
-      (loop-group (cdr groups)))))
-        [groups_list '()]
+      (loop-show (cdr group_shows)))))

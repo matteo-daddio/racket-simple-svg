@@ -2,11 +2,13 @@
 
 (require "rect.rkt")
 (require "pos.rkt")
+(require "view-box.rkt")
 
 (provide (contract-out
           [struct SVG
                   (
                    (widget_index_count natural?)
+                   (view_box (or/c #f VIEW-BOX?))
                    (shape_define_map (hash/c string? (or/c RECT?)))
                    (group_define_map (hash/c string? GROUP?))
                    (group_show_list (listof (cons string? POS?)))
@@ -20,6 +22,7 @@
 
 (struct SVG (
              [widget_index_count #:mutable]
+             [view_box #:mutable]
              [shape_define_map #:mutable]
              [group_define_map #:mutable]
              [group_show_list #:mutable]
@@ -28,5 +31,5 @@
         )
 
 (define (new-svg)
-  (SVG 0 (make-hash) (make-hash) '()))
+  (SVG 0 #f (make-hash) (make-hash) '()))
 
