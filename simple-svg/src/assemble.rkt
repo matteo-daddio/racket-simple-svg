@@ -30,48 +30,60 @@ v#lang racket
                  #:viewBox? [viewBox? #f]
                  )
 
-  (let ([widget_index 0]
-        [svg (new-svg)])
-     (with-output-to-string
-       (lambda ()
-         (dynamic-wind
-             (lambda () 
-               (printf 
-                "<svg\n    ~a\n    ~a\n    ~a\n"
-                "version=\"1.1\""
-                "xmlns=\"http://www.w3.org/2000/svg\""
-                "xmlns:xlink=\"http://www.w3.org/1999/xlink\""))
-             (lambda ()
-               (write_proc svg))
-             (lambda ()
-               (flush-data)
-               (printf "</svg>\n")))))))
+  (parameterize
+      ([*SVG* (new-svg)])
+    (with-output-to-string
+      (lambda ()
+        (dynamic-wind
+            (lambda () 
+              (printf 
+               "<svg\n    ~a\n    ~a\n    ~a\n"
+               "version=\"1.1\""
+               "xmlns=\"http://www.w3.org/2000/svg\""
+               "xmlns:xlink=\"http://www.w3.org/1999/xlink\""))
+            (lambda ()
+              (write_proc))
+            (lambda ()
+              (flush-data)
+              (printf "</svg>\n")))))))
 
-(define (svg-def-shape svg shape)
-  (let* ([new_widget_index (add1 (SVG-widget_index svg))]
+(define (svg-def-shape shape)
+  (let* ([new_widget_index (add1 (SVG-widget_index (*SVG*)))]
          [shape_index (format "s~a" new_widget_index)])
-    (set-SVG-widget_index! svg new_widget_index)
+
+    (set-SVG-widget_index! (*SVG*) new_widget_index)
+
     (hash-set! shape_define_map shape_index shape)
+
     shape_index))
 
-(define (svg-def-group svg user_proc)
-  (let* ([new_widget_index (add1 (SVG-widget_index svg))]
+(define (svg-def-group user_proc)
+  (let* ([new_widget_index (add1 (SVG-widget_index (*SVG*)))]
          [shape_index (format "g~a" new_widget_index)])
-    (set-SVG-widget_index! svg new_widget_index)
-    
-    (let ([group (new-group)])
-      (user_proc group)
-      
-      (hash-set! group_define_map group_index group)
-      
-      group_index)))
 
-(define (svg-add-widget-to-group widget_index
-                                 #:sstyle? [sstyle? #f]
-                                 #:at? [at? #f])
-  )
+    (set-SVG-widget_index! (*SVG*) new_widget_index)
+    
+    (parameterize
+        ([*GROUP* (new-group)])
+      (user_proc)
       
-(define (svg-use-shape shape_index _sstyle
+      (hash-set! group_define_map group_index (*GROUP*))
+      
+      new_widget_index)))
+
+(define (svg-put-widget-into-group widget_index
+                                   #:sstyle? [sstyle? #f]
+                                   #:at? [at? #f])
+  (set-GROUP-widget_list! (*GROUP*) `(,@(GROUP-widget_list group) ,widget_index))
+  (when sstyle?
+    (hash-set! (GROUP-widget_locate_map (*GROUP*)) widget_index sstyle?))
+  (when at?
+    (hash-set! (GROUP-widget_style_map (*GROUP*)) widget_index at?)))
+
+(define (svg-show-group group_index #:at? [at? '(0 .0)])
+  (set-SVG-group_show_list (*SVG*) `(,@(SVG-group_show_list (*SVG*)) (cons group_index at?))))
+      
+(define (svg-use-shape-old shape_index _sstyle
                        #:at? [at? #f]
                        #:hidden? [hidden? #f]
                        )
@@ -105,9 +117,6 @@ v#lang racket
     (when (not hidden?)
       ((*add-group*) new_shape_index new_at?))
     ))
-
-(define (svg-show-group group_index #:at? [at? #f])
-  (set! (*show-list*) `(,@(*show-list*) ,(cons group_index at?))))
 
 (define (flush-data)
   (printf "    width=\"~a\" height=\"~a\"\n" (*width*) (*height*))

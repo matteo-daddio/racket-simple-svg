@@ -11,7 +11,11 @@
                    (widget_style_map (hash/c string? sstyle/c))
                    )
                   ]
+          [new-group (-> GROUP?)]
+          [*GROUP* (parameter/c (or/c #f GROUP?))]          
           ))
+
+(define *GROUP* (make-parameter #f))
 
 (struct GROUP (
               [widget_list #:mutable]
