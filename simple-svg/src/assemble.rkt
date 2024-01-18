@@ -1,29 +1,68 @@
-v#lang racket
+#lang racket
+
+(require "defines/view-box.rkt")
+(require "defines/rect.rkt")
 
 (require "lib/sstyle.rkt")
 
 (provide (contract-out
           [svg-out (->* (natural? natural? procedure?)
                         (
-                         #:viewBox? (or/c #f (list/c natural? natural? natural? natural?))
+                         #:viewBox? (or/c #f VIEW-BOX?)
                         )
                         string?)]
-          [svg-use-shape (->* (string? sstyle/c) 
-                              (
-                               #:at? (cons/c natural? natural?)
-                              )
-                              void?)]
-          [svg-def-group (-> string? procedure? void?)]
-          [svg-use-group (->* (string?)
-                              (
-                               #:at? (cons/c natural? natural?)
-                                     )
-                              void?)]
+          [struct RECT
+                  (
+                   (width natural?)
+                   (height natural?)
+                   (radius_x (or/c #f natural?))
+                   (radius_y (or/c #f natural?))
+                   )
+                  ]
+          [new-rect (->* (natural? natural?)
+                         (
+                         #:radius_x? (or/c #f natural?)
+                         #:radius_y? (or/c #f natural?)
+                         ))]
+          [svg-def-shape (-> (or/c RECT?) string?)]
+          [svg-def-group (-> procedure? string?)]
+          [struct SSTYLE
+                  (
+                   (fill (or/c #f string?))
+                   (fill-rule (or/c #f 'nonzero 'evenodd 'inerit))
+                   (fill-opacity (or/c #f (between/c 0 1)))
+                   (stroke (or/c #f string?))
+                   (stroke-width (or/c #f natural?))
+                   (stroke-linecap (or/c #f 'butt 'round 'square 'inherit))
+                   (stroke-linejoin (or/c #f 'miter 'round 'bevel))
+                   (stroke-miterlimit (or/c #f (>=/c 1)))
+                   (stroke-dasharray (or/c #f string?))
+                   (stroke-dashoffset (or/c #f natural?))
+                   (translate (or/c #f (cons/c natural? natural?)))
+                   (rotate (or/c #f integer?))
+                   (scale (or/c #f natural? (cons/c natural? natural?)))
+                   (skewX (or/c #f natural?))
+                   (skewY (or/c #f natural?))
+                   (fill-gradient (or/c #f string?))
+                   )]
+          [sstyle-new (-> sstyle/c)]
+          [struct POS
+                  (
+                   (x natural?)
+                   (y natural?)
+                   )
+                  ]
+          [svg-place-widget (->* (string?)
+                                 (
+                                  #:sstyle? SSTYLE?
+                                  #:at? POS?
+                                 )
+                                 void?)]
           [svg-show-group (->* (string?)
-                              (
-                               #:at? (cons/c natural? natural?)
-                              )
-                              void?)]
+                               (
+                                #:at? POS?
+                               )
+                               void?)]
           ))
 
 (define (svg-out width height write_proc
@@ -71,9 +110,9 @@ v#lang racket
       
       new_widget_index)))
 
-(define (svg-put-widget-into-group widget_index
-                                   #:sstyle? [sstyle? #f]
-                                   #:at? [at? #f])
+(define (svg-place-widget widget_index
+                          #:sstyle? [sstyle? #f]
+                          #:at? [at? #f])
   (set-GROUP-widget_list! (*GROUP*) `(,@(GROUP-widget_list group) ,widget_index))
   (when sstyle?
     (hash-set! (GROUP-widget_locate_map (*GROUP*)) widget_index sstyle?))
