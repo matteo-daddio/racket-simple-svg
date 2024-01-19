@@ -6,7 +6,7 @@
 (provide (contract-out
           [struct GROUP
                   (
-                   (widget_list (listof string?))
+                   (widget_id_list (listof string?))
                    (widget_locate_map (hash/c string? POS?))
                    (widget_style_map (hash/c string? SSTYLE?))
                    )
@@ -18,7 +18,7 @@
 (define *GROUP* (make-parameter #f))
 
 (struct GROUP (
-              [widget_list #:mutable]
+              [widget_id_list #:mutable]
               [widget_locate_map #:mutable]
               [widget_style_map #:mutable]
               )
@@ -26,4 +26,4 @@
         )
 
 (define (new-group)
-  (GROUP '() hash? hash?))
+  (GROUP '() (make-hash) (make-hash)))

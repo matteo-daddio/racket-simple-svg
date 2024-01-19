@@ -90,17 +90,17 @@
 
 (define (svg-def-shape shape)
   (let* ([new_widget_index (add1 (SVG-widget_index_count (*SVG*)))]
-         [shape_index (format "s~a" new_widget_index)])
+         [shape_id (format "s~a" new_widget_index)])
 
     (set-SVG-widget_index_count! (*SVG*) new_widget_index)
 
-    (hash-set! (SVG-shape_define_map (*SVG*)) shape_index shape)
+    (hash-set! (SVG-shape_define_map (*SVG*)) shape_id shape)
 
-    shape_index))
+    shape_id))
 
 (define (svg-def-group user_proc)
   (let* ([new_widget_index (add1 (SVG-widget_index_count (*SVG*)))]
-         [group_index (format "g~a" new_widget_index)])
+         [group_id (format "g~a" new_widget_index)])
 
     (set-SVG-widget_index_count! (*SVG*) new_widget_index)
     
@@ -108,18 +108,18 @@
         ([*GROUP* (new-group)])
       (user_proc)
       
-      (hash-set! (SVG-group_define_map (*SVG*)) group_index (*GROUP*))
+      (hash-set! (SVG-group_define_map (*SVG*)) group_id (*GROUP*))
       
-      group_index)))
+      group_id)))
 
-(define (svg-place-widget widget_index
+(define (svg-place-widget widget_id
                           #:sstyle? [sstyle? #f]
                           #:at? [at? #f])
-  (set-GROUP-widget_list! (*GROUP*) `(,@(GROUP-widget_list (*GROUP*)) ,widget_index))
+  (set-GROUP-widget_list! (*GROUP*) `(,@(GROUP-widget_list (*GROUP*)) ,widget_id))
   (when sstyle?
-    (hash-set! (GROUP-widget_locate_map (*GROUP*)) widget_index sstyle?))
+    (hash-set! (GROUP-widget_locate_map (*GROUP*)) widget_id sstyle?))
   (when at?
-    (hash-set! (GROUP-widget_style_map (*GROUP*)) widget_index at?)))
+    (hash-set! (GROUP-widget_style_map (*GROUP*)) widget_id at?)))
 
 (define (svg-show-group group_index #:at? [at? '(0 .0)])
   (set-SVG-group_show_list! (*SVG*) `(,@(SVG-group_show_list (*SVG*)) (cons group_index at?))))
@@ -146,24 +146,29 @@
         (loop-def (cdr defs))))
     (printf "  </defs>\n\n"))
 
-  (let loop-group ([groups (sort (hash-keys (SVG-group_define_map (*SVG*))) string<?)])
-    (when (not (null? groups))
-          (printf "  <symbol id=\"~a\">\n" (car groups))
-          (let loop-shape ([shapes (hash-ref (SVG-group_define_map (*SVG*)) (car groups))])
-            (when (not (null? shapes))
-                  (let* ([shape_index (caar shapes)]
-                         [shape_at? (cdar shapes)]
-                         [_sstyle (hash-ref (*sstyles_map*) shape_index (sstyle-new))])
-                    (printf "    <use xlink:href=\"#~a\" " shape_index)
+  (let loop-group ([group_ids (sort (hash-keys (SVG-group_define_map (*SVG*))) string<?)])
+    (when (not (null? group_ids))
+      (let* ([group_id (car group_ids)]
+             [group (hash-ref (SVG-group_define_map (*SVG*)) group_id)])
+          (printf "  <symbol id=\"~a\">\n" group_id)
+          (let loop-widget ([widget_id_list (GROUP-widget_list group)]
+                            [widget_locate_map (GROUP-widget_locate_map group)]
+                            [widget_style_map (GROUP-widget_style_map group)])
+            (when (not (null? widget_id_list))
+              (let* ([widget_id (car widget_id_list)]
+                     [widget_pos (hash-ref widget_locate_map widget_id #f)]
+                     [widget_style (hash-ref widget_style_map widget_id #f)])
+                    (printf "    <use xlink:href=\"#~a\" " widget_id)
               
-                    (when shape_at?
-                          (printf "x=\"~a\" y=\"~a\" " (car shape_at?) (cdr shape_at?)))
-
-                    (printf "~a/>\n" (sstyle-format _sstyle))
+                    (when widget_pos
+                          (printf "x=\"~a\" y=\"~a\" " (POS-x widget_pos) (POS-y widget_pos)))
+                    
+                    (when widget_style
+                      (printf "~a/>\n" (sstyle-format widget_style)))
                     )
-                  (loop-shape (cdr shapes))))
+              (loop-widget (cdr widget_id_list))))
           (printf "  </symbol>\n\n")
-          (loop-group (cdr groups))))
+          (loop-group (cdr group_ids)))))
     
   (let loop-show ([group_shows (SVG-group_show_list (*SVG*))])
     (when (not (null? group_shows))
