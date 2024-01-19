@@ -11,9 +11,11 @@
                   ]
           [new-rect (->* (natural? natural?)
                          (
-                         #:radius_x? (or/c #f natural?)
-                         #:radius_y? (or/c #f natural?)
-                         ))]
+                          #:radius_x (or/c #f natural?)
+                          #:radius_y (or/c #f natural?)
+                         )
+                         RECT?
+                         )]
           ))
 
 (struct RECT (
@@ -26,8 +28,8 @@
         )
 
 (define (new-rect shape_name width height
-                  #:radius_x? [radius_x? #f]
-                  #:radius_y? [radius_y? #f])
-  (RECT width height radius_x? radius_y?))
+                  #:radius_x [radius_x #f]
+                  #:radius_y [radius_y #f])
+  (RECT width height radius_x radius_y))
 
 

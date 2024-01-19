@@ -2,8 +2,9 @@
 
 (require "defines/view-box.rkt")
 (require "defines/rect.rkt")
-
-(require "lib/sstyle.rkt")
+(require "defines/pos.rkt")
+(require "defines/svg.rkt")
+(require "defines/sstyle.rkt")
 
 (provide (contract-out
           [svg-out (->* (natural? natural? procedure?)
@@ -21,8 +22,8 @@
                   ]
           [new-rect (->* (natural? natural?)
                          (
-                         #:radius_x? (or/c #f natural?)
-                         #:radius_y? (or/c #f natural?)
+                          (#:radius_x? (or/c #f natural?))
+                          (#:radius_y? (or/c #f natural?))
                          ))]
           [svg-def-shape (-> (or/c RECT?) string?)]
           [svg-def-group (-> procedure? string?)]
@@ -45,7 +46,7 @@
                    (skewY (or/c #f natural?))
                    (fill-gradient (or/c #f string?))
                    )]
-          [sstyle-new (-> sstyle/c)]
+          [sstyle-new (-> SSTYLE?)]
           [struct POS
                   (
                    (x natural?)

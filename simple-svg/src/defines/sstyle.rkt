@@ -20,8 +20,8 @@
                    (skewY (or/c #f natural?))
                    (fill-gradient (or/c #f string?))
                    )]
-          [sstyle-new (-> sstyle/c)]
-          [sstyle-format (-> sstyle/c string?)]
+          [sstyle-new (-> SSTYLE?)]
+          [sstyle-format (-> SSTYLE? string?)]
           ))
 
 (struct SSTYLE (
@@ -45,29 +45,8 @@
         #:transparent
         #:mutable)
 
-(define sstyle/c
-  (struct/dc
-   sstyle
-     [fill (or/c #f string?)]
-     [fill-rule (or/c #f 'nonzero 'evenodd 'inerit)]
-     [fill-opacity (or/c #f (between/c 0 1))]
-     [stroke (or/c #f string?)]
-     [stroke-width (or/c #f natural?)]
-     [stroke-linecap (or/c #f 'butt 'round 'square 'inherit)]
-     [stroke-linejoin (or/c #f 'miter 'round 'bevel)]
-     [stroke-miterlimit (or/c #f (>=/c 1))]
-     [stroke-dasharray (or/c #f string?)]
-     [stroke-dashoffset (or/c #f natural?)]
-     [translate (or/c #f (cons/c natural? natural?))]
-     [rotate (or/c #f integer?)]
-     [scale (or/c #f natural? (cons/c natural? natural?))]
-     [skewX (or/c #f natural?)]
-     [skewY (or/c #f natural?)]
-     [fill-gradient (or/c #f string?)]
-    ))
-
 (define (sstyle-new)
-  (sstyle
+  (SSTYLE
    #f #f #f #f #f #f #f #f #f #f
    #f #f #f #f #f #f))
 
@@ -75,70 +54,70 @@
   (with-output-to-string
     (lambda ()
       (cond
-       [(sstyle-fill-gradient _sstyle)
-        (printf "fill=\"url(#~a)\" " (sstyle-fill-gradient _sstyle))]
+       [(SSTYLE-fill-gradient _sstyle)
+        (printf "fill=\"url(#~a)\" " (SSTYLE-fill-gradient _sstyle))]
        [else
-        (when (sstyle-fill _sstyle)
-          (printf "fill=\"~a\" " (sstyle-fill _sstyle)))])
+        (when (SSTYLE-fill _sstyle)
+          (printf "fill=\"~a\" " (SSTYLE-fill _sstyle)))])
 
-      (when (sstyle-fill-rule _sstyle)
-            (printf "fill-rule=\"~a\" " (sstyle-fill-rule _sstyle)))
+      (when (SSTYLE-fill-rule _sstyle)
+            (printf "fill-rule=\"~a\" " (SSTYLE-fill-rule _sstyle)))
 
-      (when (sstyle-fill-opacity _sstyle)
-            (printf "fill-opacity=\"~a\" " (sstyle-fill-opacity _sstyle)))
+      (when (SSTYLE-fill-opacity _sstyle)
+            (printf "fill-opacity=\"~a\" " (SSTYLE-fill-opacity _sstyle)))
 
 
-      (when (sstyle-stroke-width _sstyle)
-            (printf "stroke-width=\"~a\" " (sstyle-stroke-width _sstyle))
+      (when (SSTYLE-stroke-width _sstyle)
+            (printf "stroke-width=\"~a\" " (SSTYLE-stroke-width _sstyle))
 
-            (when (sstyle-stroke _sstyle)
-                  (printf "stroke=\"~a\" " (sstyle-stroke _sstyle)))
+            (when (SSTYLE-stroke _sstyle)
+                  (printf "stroke=\"~a\" " (SSTYLE-stroke _sstyle)))
 
-            (when (sstyle-stroke-linejoin _sstyle)
-                  (printf "stroke-linejoin=\"~a\" " (sstyle-stroke-linejoin _sstyle)))
+            (when (SSTYLE-stroke-linejoin _sstyle)
+                  (printf "stroke-linejoin=\"~a\" " (SSTYLE-stroke-linejoin _sstyle)))
 
-            (when (sstyle-stroke-linecap _sstyle)
-                  (printf "stroke-linecap=\"~a\" " (sstyle-stroke-linecap _sstyle)))
+            (when (SSTYLE-stroke-linecap _sstyle)
+                  (printf "stroke-linecap=\"~a\" " (SSTYLE-stroke-linecap _sstyle)))
 
-            (when (sstyle-stroke-miterlimit _sstyle)
-                  (printf "stroke-miterlimit=\"~a\" " (sstyle-stroke-miterlimit _sstyle)))
+            (when (SSTYLE-stroke-miterlimit _sstyle)
+                  (printf "stroke-miterlimit=\"~a\" " (SSTYLE-stroke-miterlimit _sstyle)))
 
-            (when (sstyle-stroke-dasharray _sstyle)
-                  (printf "stroke-dasharray=\"~a\" " (sstyle-stroke-dasharray _sstyle)))
+            (when (SSTYLE-stroke-dasharray _sstyle)
+                  (printf "stroke-dasharray=\"~a\" " (SSTYLE-stroke-dasharray _sstyle)))
 
-            (when (sstyle-stroke-dashoffset _sstyle)
-                  (printf "stroke-dashoffset=\"~a\" " (sstyle-stroke-dashoffset _sstyle)))
+            (when (SSTYLE-stroke-dashoffset _sstyle)
+                  (printf "stroke-dashoffset=\"~a\" " (SSTYLE-stroke-dashoffset _sstyle)))
             )
       
       (when (or
-             (sstyle-translate _sstyle)
-             (sstyle-rotate _sstyle)
-             (sstyle-scale _sstyle)
-             (sstyle-skewX _sstyle)
-             (sstyle-skewY _sstyle)
+             (SSTYLE-translate _sstyle)
+             (SSTYLE-rotate _sstyle)
+             (SSTYLE-scale _sstyle)
+             (SSTYLE-skewX _sstyle)
+             (SSTYLE-skewY _sstyle)
              )
             (printf "transform=\"")
 
-            (when (sstyle-translate _sstyle)
+            (when (SSTYLE-translate _sstyle)
                   (printf "translate(~a ~a) "
-                          (car (sstyle-translate _sstyle))
-                          (cdr (sstyle-translate _sstyle))))
+                          (car (SSTYLE-translate _sstyle))
+                          (cdr (SSTYLE-translate _sstyle))))
             
-            (when (sstyle-rotate _sstyle)
-                  (printf "rotate(~a) " (sstyle-rotate _sstyle)))
+            (when (SSTYLE-rotate _sstyle)
+                  (printf "rotate(~a) " (SSTYLE-rotate _sstyle)))
 
-            (when (sstyle-scale _sstyle)
-                  (if (pair? (sstyle-scale _sstyle))
+            (when (SSTYLE-scale _sstyle)
+                  (if (pair? (SSTYLE-scale _sstyle))
                       (printf "scale(~a ~a) "
-                              (car (sstyle-scale _sstyle))
-                              (cdr (sstyle-scale _sstyle)))
-                      (printf "scale(~a) " (sstyle-scale _sstyle))))
+                              (car (SSTYLE-scale _sstyle))
+                              (cdr (SSTYLE-scale _sstyle)))
+                      (printf "scale(~a) " (SSTYLE-scale _sstyle))))
             
-            (when (sstyle-skewX _sstyle)
-                  (printf "skewX(~a) " (sstyle-skewX _sstyle)))
+            (when (SSTYLE-skewX _sstyle)
+                  (printf "skewX(~a) " (SSTYLE-skewX _sstyle)))
 
-            (when (sstyle-skewY _sstyle)
-                  (printf "skewY(~a) " (sstyle-skewY _sstyle)))
+            (when (SSTYLE-skewY _sstyle)
+                  (printf "skewY(~a) " (SSTYLE-skewY _sstyle)))
             
             (printf "\""))
       )))
