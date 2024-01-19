@@ -37,10 +37,10 @@
            (svg-out
             100 100
             (lambda ()
-              (let ([rec (svg-def-rect 100 100)]
+              (let ([rec_id (svg-def-shape (new-rect 100 100))]
                     [_sstyle (sstyle-new)])
-                (sstyle-set! _sstyle 'fill "#BBC42A")
-                (svg-use-shape rec _sstyle))))])
+                (set-SSTYLE-fill! _sstyle 'fill "#BBC42A")
+                (svg-place-widget rec_id #:style _sstyle))))])
       
       (call-with-input-file rect_svg
         (lambda (expected)
@@ -57,11 +57,10 @@
             100 100
             #:viewBox? '(50 0 100 100)
             (lambda ()
-              (let ([rec (svg-def-rect 100 100)]
+              (let ([rec_id (svg-def-shape (new-rect 100 100))]
                     [_sstyle (sstyle-new)])
-                (sstyle-set! _sstyle 'fill "#BBC42A")
-                (svg-use-shape rec _sstyle)
-                (svg-show-default))))])
+                (set-SSTYLE-fill! _sstyle "#BBC42A")
+                (svg-place-widget rec_id #:style _sstyle))))])
       
       (call-with-input-file viewBox_svg
         (lambda (expected)
@@ -69,7 +68,6 @@
            svg_str
            (lambda (actual)
              (check-lines? expected actual)))))))
-
    ))
 
 (run-tests test-basic)

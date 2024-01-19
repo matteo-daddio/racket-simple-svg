@@ -8,13 +8,13 @@
 (provide (contract-out
           [struct SVG
                   (
-                   (widget_index_count natural?)
+                   (widget_id_count natural?)
                    (width natural?)
                    (height natural?)
                    (view_box (or/c #f VIEW-BOX?))
                    (shape_define_map (hash/c string? (or/c RECT?)))
                    (group_define_map (hash/c string? GROUP?))
-                   (group_show_list (listof (cons string? POS?)))
+                   (group_show_list (listof (cons/c string? POS?)))
                    )
                   ]
           [new-svg (-> natural? natural? SVG?)]
@@ -24,7 +24,7 @@
 (define *SVG* (make-parameter #f))
 
 (struct SVG (
-             [widget_index_count #:mutable]
+             [widget_id_count #:mutable]
              [width #:mutable]
              [height #:mutable]
              [view_box #:mutable]
