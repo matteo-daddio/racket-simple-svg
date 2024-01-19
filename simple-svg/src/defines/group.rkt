@@ -8,7 +8,7 @@
                   (
                    (widget_list (listof string?))
                    (widget_locate_map (hash/c string? POS?))
-                   (widget_style_map (hash/c string? sstyle/c))
+                   (widget_style_map (hash/c string? SSTYLE?))
                    )
                   ]
           [new-group (-> GROUP?)]

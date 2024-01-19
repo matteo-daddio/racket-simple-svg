@@ -124,32 +124,64 @@
 (define (svg-show-group group_index #:at? [at? '(0 .0)])
   (set-SVG-group_show_list! (*SVG*) `(,@(SVG-group_show_list (*SVG*)) (cons group_index at?))))
       
-(define (flush-data)
-  (printf "    width=\"~a\" height=\"~a\"\n" (SVG-width (*SVG*)) (SVG-height (*SVG*)))
+(define (svg-use-shape-old shape_index _sstyle
+                       #:at? [at? #f]
+                       #:hidden? [hidden? #f]
+                       )
+  (let* ([shape (hash-ref (*shapes_map*) shape_index)]
+         [new_shape_index shape_index]
+         [new_shape shape]
+         [new_at? at?])
 
-  (when (SVG-view_box (*SVG*))
-    (let ([view_box (SVG-view_box (*SVG*))])
+    (cond
+     [(eq? (hash-ref shape 'type) 'circle)
+      (set! new_shape_index ((*shape-index*)))
+      (set! new_shape (hash-copy shape))
+      (when at?
+            (hash-set! new_shape 'cx (car new_at?))
+            (hash-set! new_shape 'cy (cdr new_at?)))
+      (set! new_at? #f)]
+     [(eq? (hash-ref shape 'type) 'ellipse)
+      (set! new_shape_index ((*shape-index*)))
+      (set! new_shape (hash-copy shape))
+      (let ([radius (hash-ref shape 'radius)])
+        (when at?
+              (hash-set! new_shape 'cx (car new_at?))
+              (hash-set! new_shape 'cy (cdr new_at?)))
+        (set! new_at? #f)
+        (hash-set! new_shape 'rx (car radius))
+        (hash-set! new_shape 'ry (cdr radius)))]
+     )
+
+    ((*set-shapes-map*) new_shape_index new_shape)
+    ((*set-sstyles-map*) new_shape_index _sstyle)
+    (when (not hidden?)
+      ((*add-group*) new_shape_index new_at?))
+    ))
+
+(define (flush-data)
+  (printf "    width=\"~a\" height=\"~a\"\n" (*width*) (*height*))
+
+  (when (SVG-view_box (*svg*))
+    (let ([view_box (SVG-view_box (*svg*))])
       (printf "    viewBox=\"~a ~a ~a ~a\"\n"
-              (VIEW-BOX-min_x view_box)
-              (VIEW-BOX-min_y view_box)
-              (VIEW-BOX-width view_box)
-              (VIEW-BOX-height view_box))))
+              (first view_box) (second view_box) (third view_box) (fourth view_box))))
       
   (printf "    >\n")
 
-  (when (not (= (hash-count (SVG-shape_define_map (*SVG*))) 0))
+  (when (not (= (hash-count (SVG-shape_define_map (*svg*))) 0))
     (printf "  <defs>\n")
-    (let loop-def ([defs (sort (hash-keys (SVG-shape_define_map (*SVG*))) string<?)])
+    (let loop-def ([defs (sort (hash-keys (SVG-shape_define_map (*svg*))) string<?)])
       (when (not (null? defs))
-        (let ([shape (hash-ref (SVG-shape_define_map (*SVG*)) (car defs))])
+        (let ([shape (hash-ref (SVG-shape_define_map (*svg*)) (car defs))])
           (printf "~a" ((hash-ref shape 'format-def) (car defs) shape)))
         (loop-def (cdr defs))))
     (printf "  </defs>\n\n"))
 
-  (let loop-group ([groups (sort (hash-keys (SVG-group_define_map (*SVG*))) string<?)])
+  (let loop-group ([groups (sort (hash-keys (SVG-group_define_map (*svg*))) string<?)])
     (when (not (null? groups))
           (printf "  <symbol id=\"~a\">\n" (car groups))
-          (let loop-shape ([shapes (hash-ref (SVG-group_define_map (*SVG*)) (car groups))])
+          (let loop-shape ([shapes (hash-ref (SVG-group_define_map (*svg*)) (car groups))])
             (when (not (null? shapes))
                   (let* ([shape_index (caar shapes)]
                          [shape_at? (cdar shapes)]
@@ -165,7 +197,7 @@
           (printf "  </symbol>\n\n")
           (loop-group (cdr groups))))
     
-  (let loop-show ([group_shows (SVG-group_show_list (*SVG*))])
+  (let loop-show ([group_shows (SVG-group_show_list (*svg*))])
     (when (not (null? group_shows))
       (let* ([group_show (car group_shows)]
              [group_index (car group_show)]
