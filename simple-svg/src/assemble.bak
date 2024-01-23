@@ -72,7 +72,7 @@
                  )
 
   (parameterize
-      ([*SVG* (new-svg)])
+      ([*SVG* (new-svg width height)])
     (with-output-to-string
       (lambda ()
         (dynamic-wind

@@ -82,7 +82,7 @@
                  )
 
   (parameterize
-      ([*SVG* (new-svg)])
+      ([*SVG* (new-svg width height)])
     (with-output-to-string
       (lambda ()
         (dynamic-wind
@@ -149,10 +149,10 @@
 
   (when (not (= (hash-count (SVG-shape_define_map (*SVG*))) 0))
     (printf "  <defs>\n")
-    (let loop-def ([defs (sort (hash-keys (SVG-shape_define_map (*SVG*))) string<?)])
-      (when (not (null? defs))
-        (let ([shape (hash-ref (SVG-shape_define_map (*SVG*)) (car defs))])
-          (printf "~a" ((hash-ref shape 'format-def) (car defs) shape)))
+    (let loop-def ([shape_ids (sort (hash-keys (SVG-shape_define_map (*SVG*))) string<?)])
+      (when (not (null? shape_ids))
+        (let ([shape (hash-ref (SVG-shape_define_map (*SVG*)) (car shape_ids))])
+          (printf "~a" (fomat-shape shape_id 
         (loop-def (cdr defs))))
     (printf "  </defs>\n\n"))
 
