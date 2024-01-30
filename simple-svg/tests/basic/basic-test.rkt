@@ -39,7 +39,7 @@
             (lambda ()
               (let ([rec_id (svg-def-shape (new-rect 100 100))]
                     [_sstyle (sstyle-new)])
-                (set-SSTYLE-fill! _sstyle 'fill "#BBC42A")
+                (set-SSTYLE-fill! _sstyle "#BBC42A")
                 (svg-place-widget rec_id #:style _sstyle))))])
       
       (call-with-input-file rect_svg

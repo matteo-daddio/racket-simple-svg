@@ -28,6 +28,9 @@
         #:transparent
         )
 
+(define (new-rect width height #:radius_x [radius_x #f] #:radius_y [radius_y #f])
+  (RECT width height radius_x radius_y))
+
 (define (format-rect shape_id rect)
   (format "    <rect id=\"~a\" ~a/>\n"
           shape_id

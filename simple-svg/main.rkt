@@ -152,8 +152,12 @@
     (let loop-def ([shape_ids (sort (hash-keys (SVG-shape_define_map (*SVG*))) string<?)])
       (when (not (null? shape_ids))
         (let ([shape (hash-ref (SVG-shape_define_map (*SVG*)) (car shape_ids))])
-          (printf "~a" (fomat-shape shape_id 
-        (loop-def (cdr defs))))
+          (printf "~a"
+                  (cond
+                   [(RECT? shape)
+                    (format-rect (car shape_ids) shape)]
+                   )))
+        (loop-def (cdr shape_ids))))
     (printf "  </defs>\n\n"))
 
   (let loop-group ([group_ids (sort (hash-keys (SVG-group_define_map (*SVG*))) string<?)])
